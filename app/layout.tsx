@@ -1,4 +1,6 @@
 import "./globals.css";
+import "remixicon/fonts/remixicon.css";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
@@ -19,10 +21,20 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
-      <body className={`${inter.className} w-full min-h-full h-screen flex`}>
+      <body className={`${inter.className} flex h-screen w-full flex-col`}>
         <SessionProvider session={session}>
-          <main className="flex flex-col w-full h-full bg-yellow-300">
-            <Header />
+          <Image
+            src="/bg-dark.jpg"
+            alt="Picture of the author"
+            className="opacity-90"
+            fill={true}
+            style={{ objectFit: "cover" }}
+            placeholder="blur"
+            quality={100}
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+          />
+          <Header />
+          <main className="prose prose-invert backdrop-blur-xs z-50 flex h-full w-full max-w-none grow flex-col p-10">
             {children}
           </main>
         </SessionProvider>

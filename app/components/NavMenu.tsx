@@ -25,7 +25,7 @@ function AuthButton() {
 
 export default function NavMenu() {
   return (
-    <div className="bg-slate-100 flex  w-full justify-end">
+    <div className="flex w-full  justify-end gap-10 whitespace-nowrap">
       <AuthButton />
     </div>
   );
