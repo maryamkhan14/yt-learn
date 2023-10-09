@@ -21,7 +21,9 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
-      <body className={`${inter.className} flex h-screen w-full flex-col`}>
+      <body
+        className={`${inter.className} relative flex  h-fit min-h-screen w-full flex-col`}
+      >
         <SessionProvider session={session}>
           <Image
             src="/bg-dark.jpg"
@@ -34,7 +36,7 @@ export default async function RootLayout({
             blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
           />
           <Header />
-          <main className="prose prose-invert backdrop-blur-xs z-50 flex h-full w-full max-w-none grow flex-col p-10">
+          <main className="backdrop-blur-xs prose prose-invert z-50 flex h-full w-full max-w-none grow flex-col p-10">
             {children}
           </main>
         </SessionProvider>
