@@ -14,6 +14,10 @@
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.3.1",
     "@prisma/client": "^5.4.1",
+    "@trpc/client": "^10.40.0",
+    "@trpc/next": "^10.40.0",
+    "@trpc/react-query": "^10.40.0",
+    "@trpc/server": "^10.40.0",
     "next": "13.5.4",
     "next-auth": "^4.23.2",
     "react": "^18",
@@ -22,6 +26,7 @@
     "react-hot-toast": "^2.4.1",
     "react-tooltip": "^5.21.5",
     "remixicon": "^3.5.0",
+    "superjson": "^2.0.0",
     "tailwind-merge": "^1.14.0",
     "zod": "^3.22.4"
   },
