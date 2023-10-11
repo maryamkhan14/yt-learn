@@ -4,8 +4,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
-import SessionProvider from "./components/SessionProvider";
-import Header from "./components/Header";
+import SessionProvider from "@/components/SessionProvider";
+import Header from "@/components/Header";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
