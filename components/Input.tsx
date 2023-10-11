@@ -1,11 +1,12 @@
 import { ErrorMessage } from "@hookform/error-message";
 import { useFormContext } from "react-hook-form";
-
+import { twMerge } from "tailwind-merge";
 function Input<Model extends Record<string, any>>({
   name,
   displayName,
   type = "text",
-  className,
+  containerStyles,
+  inputStyles,
   placeholder,
   maxLength,
   inputMode = "text",
@@ -14,7 +15,8 @@ function Input<Model extends Record<string, any>>({
   name: keyof Model | string;
   displayName: string;
   type?: string;
-  className?: string;
+  containerStyles?: string;
+  inputStyles?: string;
   placeholder?: string;
   maxLength?: number;
   disabled?: boolean;
@@ -35,11 +37,19 @@ function Input<Model extends Record<string, any>>({
     watch,
     getFieldState,
   } = useFormContext();
+  const inputClassName = twMerge(
+    "w-full rounded-lg border-4 border-opacity-0 px-4 py-3 text-lg text-gray-900 outline-none invalid:border-4 invalid:border-red-500 focus:border-blue-600 focus:ring-0  disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400",
+    inputStyles,
+  );
+  const containerClassName = twMerge(
+    "min-w-1/5 flex flex-col relative my-3 md:my-0",
+    containerStyles,
+  );
   const isInvalid = !!getFieldState(name as string).invalid;
   return (
-    <div className={`min-w-1/4 flex flex-col ${className} `}>
+    <div className={containerClassName}>
       <div
-        className="m-0 flex w-full items-end  justify-between p-0"
+        className="absolute top-0 flex w-full -translate-y-[100%] transform items-end  justify-between p-0"
         role="label"
       >
         <p className="m-0 whitespace-nowrap p-0">{displayName}</p>
@@ -52,12 +62,10 @@ function Input<Model extends Record<string, any>>({
             </span>
           )}
       </div>
-      <div className="relative flex">
+      <div>
         <input
           type={type}
-          className={`w-full rounded-lg  ${
-            isInvalid ? "border-4 border-red-500" : "border-4 border-opacity-0"
-          } px-4 py-3 text-lg text-gray-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-0  disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400 ${className}`}
+          className={inputClassName}
           {...register(name as string)}
           disabled={isSubmitting}
           placeholder={placeholder}

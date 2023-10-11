@@ -49,7 +49,7 @@ function Lesson({ idx, insert, remove }: LessonProps) {
         </label>
         <input
           disabled={true}
-          className="w-full rounded-lg border-4 border-opacity-0 px-2 py-3 text-lg text-gray-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-0  disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400"
+          className="w-full rounded-lg border-4 border-opacity-0 px-4 py-3 text-lg text-gray-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-0  disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400"
           defaultValue={startTimestamp}
         />
       </div>
@@ -58,7 +58,8 @@ function Lesson({ idx, insert, remove }: LessonProps) {
         name={`lessons[${idx}].end`}
         type="numeric"
         inputMode="numeric"
-        className="md:w-1/6"
+        containerStyles="md:w-1/6"
+        inputStyles="focus:bg-white"
         maxLength={25}
         placeholder="00:00:01 - will be replaced by YT vid's length"
       ></Input>
@@ -66,7 +67,8 @@ function Lesson({ idx, insert, remove }: LessonProps) {
         displayName="Lesson name"
         name={`lessons[${idx}].name`}
         type="text"
-        className="grow"
+        containerStyles="grow"
+        inputStyles="focus:bg-white"
         placeholder="This lesson's name. Keep it short and sweet."
         maxLength={75}
         displayRemainingCharacters={true}
