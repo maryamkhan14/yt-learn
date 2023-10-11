@@ -8,7 +8,10 @@ export const ParseFormSchema = z.object({
         end: z
           .string()
           .regex(TIMESTAMP_REGEX, "Timestamp must be in HH:MM:SS format"),
-        name: z.string().min(20).max(50),
+        name: z
+          .string()
+          .min(20, "Lesson name must contain at least 20 characters.")
+          .max(50),
       }),
     )
     .superRefine((array, ctx) => {
@@ -25,9 +28,9 @@ export const ParseFormSchema = z.object({
       }
     }),
 });
-export type ParseFormSchemaType = z.infer<typeof ParseFormSchema>;
+export type ParseFormSchema = z.infer<typeof ParseFormSchema>;
 export const LessonSchema = z.object({
-  end: z.string().regex(TIMESTAMP_REGEX).min(1),
+  end: z.string().regex(TIMESTAMP_REGEX),
   name: z.string().min(20).max(50),
 });
-export type LessonSchemaType = z.infer<typeof LessonSchema>;
+export type LessonSchema = z.infer<typeof LessonSchema>;

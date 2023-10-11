@@ -1,14 +1,12 @@
 "use client";
-import { SubmitHandler } from "react-hook-form";
-import Form from "@/app/components/Form";
-import { ParseFormSchema, ParseFormSchemaType } from "../schema";
+import { SubmitHandler, useFieldArray, useFormContext } from "react-hook-form";
+import Form from "@/components/Form";
+import { ParseFormSchema } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../utils/TimestampParser";
 
 function ParseForm({ totalLength }: { totalLength: number }) {
-  const minLength = 0;
-
-  const onSubmit: SubmitHandler<ParseFormSchemaType> = async (data) => {
+  const onSubmit: SubmitHandler<ParseFormSchema> = async (data) => {
     await new Promise((resolve) => {
       setTimeout(() => {
         alert("it worked!");
@@ -26,11 +24,12 @@ function ParseForm({ totalLength }: { totalLength: number }) {
   };
   return (
     <div>
-      <Form<ParseFormSchemaType>
+      <Form<ParseFormSchema>
         schema={ParseFormSchema}
         onSubmit={onSubmit}
         defaultValues={initialValues}
         arrayName="lessons"
+        className="flex-col"
       >
         <Lessons />
       </Form>

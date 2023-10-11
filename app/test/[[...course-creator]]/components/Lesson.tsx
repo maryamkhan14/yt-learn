@@ -1,7 +1,7 @@
-import { type LessonSchemaType } from "../schema";
-import { toTimestamp, toSeconds } from "../utils/TimestampParser";
-import { z } from "zod";
-
+import { ParseFormSchema, type LessonSchema } from "../schema";
+import { toSeconds, toTimestamp } from "../utils/TimestampParser";
+import LessonActions from "./LessonActions";
+("./LessonActions");
 import {
   FieldValues,
   useFormContext,
@@ -9,8 +9,14 @@ import {
   type UseFieldArrayRemove,
   UseFieldArrayInsert,
 } from "react-hook-form";
-import Input from "@/app/components/Input";
-import Button from "./Button";
+import Input from "@/components/Input";
+import CircularIconOnlyButton from "@/components/button/CircularIconOnlyButton";
+
+type LessonProps = {
+  idx: number;
+  insert: UseFieldArrayInsert<FieldValues, "lessons">;
+  remove: UseFieldArrayRemove;
+};
 
 function calculateStartTime(
   watch: UseFormWatch<FieldValues>,
@@ -28,47 +34,35 @@ function calculateStartTime(
     startTime: previousEndingTimeStampInSeconds,
   };
 }
-function Lesson({
-  idx,
-  insert,
-  remove,
-  maxIdx,
-}: {
-  idx: number;
-  insert: UseFieldArrayInsert<FieldValues, "lessons">;
-  remove: UseFieldArrayRemove;
-  maxIdx: number;
-}) {
+function Lesson({ idx, insert, remove }: LessonProps) {
   const {
     watch,
     formState: { defaultValues },
   } = useFormContext();
-  const { timestamp: startTimestamp, startTime } = calculateStartTime(
-    watch,
-    idx,
-  );
+  const { timestamp: startTimestamp } = calculateStartTime(watch, idx);
   const endTime = toSeconds(watch(`lessons[${idx}].end`));
   return (
-    <div className="flex w-full flex-col gap-3 md:flex-row ">
-      <div className="min-w-1/4 flex flex-col">
-        <label>
+    <div className="my-3 flex w-full flex-col gap-3 md:flex-row ">
+      <div className="relative my-3 flex flex-col md:my-0 md:w-1/6">
+        <label className="absolute  top-0  -translate-y-[100%] transform ">
           <span>Start</span>
-          <input
-            disabled={true}
-            className={`w-full rounded-lg border-4 border-opacity-0 px-4 py-3 text-lg text-gray-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-0  disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400`}
-            value={startTimestamp}
-          />
         </label>
+        <input
+          disabled={true}
+          className="w-full rounded-lg border-4 border-opacity-0 px-2 py-3 text-lg text-gray-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-0  disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400"
+          defaultValue={startTimestamp}
+        />
       </div>
-      <Input<LessonSchemaType>
+      <Input<LessonSchema>
         displayName="End"
         name={`lessons[${idx}].end`}
         type="numeric"
         inputMode="numeric"
+        className="md:w-1/6"
         maxLength={25}
         placeholder="00:00:01 - will be replaced by YT vid's length"
       ></Input>
-      <Input<LessonSchemaType>
+      <Input<LessonSchema>
         displayName="Lesson name"
         name={`lessons[${idx}].name`}
         type="text"
@@ -77,38 +71,13 @@ function Lesson({
         maxLength={75}
         displayRemainingCharacters={true}
       ></Input>
-      <div
-        className={`w-1/8 } } flex  justify-between gap-2 
-       md:flex-col md:justify-end`}
-      >
-        {endTime > 0 && (
-          <Button
-            icon="ri-add-fill "
-            srCaption="Add a new lesson"
-            onClick={() => {
-              insert(idx + 1, defaultValues?.lessons?.[0]);
-            }}
-            className="text-gray-100 hover:bg-blue-700/50 active:text-slate-700 "
-          />
-        )}
-        {idx < maxIdx ? (
-          <Button
-            icon="ri-subtract-fill "
-            srCaption="Remove this lesson"
-            onClick={() => {
-              remove(idx);
-            }}
-            className="text-red-500 hover:bg-red-700/50 "
-          />
-        ) : (
-          <Button
-            icon="ri-check-fill"
-            srCaption="Add this lesson"
-            type="submit"
-            className="text-green-500 hover:bg-green-700/50 "
-          />
-        )}
-      </div>
+      <LessonActions
+        endTime={endTime}
+        insert={insert}
+        remove={remove}
+        defaultValues={defaultValues as ParseFormSchema}
+        idx={idx}
+      />
     </div>
   );
 }
