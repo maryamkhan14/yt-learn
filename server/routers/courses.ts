@@ -6,7 +6,7 @@ export const coursesRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const course = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id=${input.id}&key=${process.env.DEV_YT_API_KEY}`,
+        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id=${input.id}&key=${process.env.YT_API_KEY}`,
         {
           referrer: "http://localhost:3000 ",
         },
@@ -17,7 +17,7 @@ export const coursesRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const course = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id=${input.id}&key=${process.env.DEV_YT_API_KEY}`,
+        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id=${input.id}&key=${process.env.YT_API_KEY}`,
         {
           referrer: "http://localhost:3000 ",
         },
