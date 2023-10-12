@@ -1,15 +1,10 @@
 "use client";
-import LinkForm from "./components/LinkForm";
 
 export default function Home() {
   return (
-    <div className="w-full justify-center bg-slate-900/20 p-10 text-center">
-      <h1 className="text-center text-7xl drop-shadow-md">
-        Your favorite YouTube videos, as{" "}
-        <span className="text-yellow-400">courses</span>
-      </h1>
-
-      <LinkForm />
-    </div>
+    <h1 className="mb-10 text-center text-6xl leading-none drop-shadow-md">
+      Your favorite YouTube videos, as{" "}
+      <span className="text-yellow-400">courses</span>
+    </h1>
   );
 }
