@@ -1,5 +1,5 @@
 "use client";
-import { LinkSchema, LINK_REGEX } from "@/app/(landing-page)/schema";
+import { LinkFormSchema } from "@/app/(landing-page)/schema";
 import Form from "@/components/Form";
 import Input from "@/components/Input";
 import { type SubmitHandler } from "react-hook-form";
@@ -8,27 +8,21 @@ import { useRouter } from "next/navigation";
 
 function LinkForm() {
   const router = useRouter();
-  const onSubmit: SubmitHandler<LinkSchema> = (data: LinkSchema) => {
-    let id;
-    let match;
-    LINK_REGEX.lastIndex = 0;
-    while ((match = LINK_REGEX.exec(data.link)) !== null) {
-      id = match[6];
-    }
-    if (!!id) router.push(`/create/${id}`);
+  const onSubmit: SubmitHandler<LinkFormSchema> = (data: LinkFormSchema) => {
+    router.replace(`/create/${encodeURIComponent(data.link)}`);
   };
   return (
     <div className="flex  flex-col gap-3 ">
       <h1 className="mb-2 whitespace-nowrap p-0 text-center text-2xl text-yellow-400">
         Give it a spin! 👇
       </h1>
-      <Form<LinkSchema>
-        schema={LinkSchema}
+      <Form<LinkFormSchema>
+        schema={LinkFormSchema}
         onSubmit={onSubmit}
         defaultValues={{ link: "" }}
         className="group flex items-stretch"
       >
-        <Input<LinkSchema>
+        <Input<LinkFormSchema>
           name="link"
           displayName="Link"
           containerStyles="grow"
