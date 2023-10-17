@@ -5,10 +5,12 @@ import YouTubePlayer from "@/components/YouTubePlayer";
 import toast from "react-hot-toast";
 import { type Link } from "@/app/(landing-page)/schema";
 import VideoBar from "./components/VideoBar";
-
+import dynamic from "next/dynamic";
+const CourseForm = dynamic(() => import("./components/CourseForm"));
 function Course({ params }: { params: { link: Link } }) {
   const router = useRouter();
   const [played, setPlayed] = useState(0);
+  const [duration, setDuration] = useState(0);
   const handleError = () => {
     toast.error(
       "An unknown error occurred. Please check your link and try again!",
@@ -23,9 +25,13 @@ function Course({ params }: { params: { link: Link } }) {
           onProgress={({ played }) => {
             setPlayed(played);
           }}
+          onDuration={(duration) => {
+            setDuration(duration);
+          }}
           onError={handleError}
         />
         <VideoBar currentPosition={played} />
+        {duration > 0 && <CourseForm duration={duration} />}
       </div>
     </div>
   );
