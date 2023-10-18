@@ -1,22 +1,23 @@
 "use client";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import { useForm, FormProvider, type FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type ZodObject } from "zod";
+import { type ReactNode } from "react";
 type GenericOnSubmit = (
-  data: Record<string, any>,
+  data: Record<string, FieldValues>,
   event?: React.BaseSyntheticEvent,
 ) => void;
-function Form<DataSchema extends Record<string, any>>({
-  arrayName = "",
+function Form<DataSchema extends Record<string, FieldValues>>({
   schema,
   onSubmit,
   children,
   defaultValues,
   className,
 }: {
-  schema: any;
+  schema: ZodObject<FieldValues>;
   onSubmit: (data: DataSchema, event?: React.BaseSyntheticEvent) => void;
-  children: any;
-  defaultValues?: Record<string, any>;
+  children: ReactNode;
+  defaultValues?: Record<string, FieldValues>;
   arrayName?: string;
   className?: string;
 }) {

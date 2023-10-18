@@ -3,25 +3,25 @@ import {
   useFormContext,
   type UseFieldArrayRemove,
   type UseFieldArrayInsert,
-  type DefaultValues,
 } from "react-hook-form";
 import CircularIconOnlyButton from "@/components/button/CircularIconOnlyButton";
-import { ParseFormSchema } from "../schema";
+import { type LessonSchema } from "../schema";
+import { toTimestamp } from "../../../../lib/time";
 type LessonActionsProps = {
   endTime: number;
   insert: UseFieldArrayInsert<FieldValues, "lessons">;
   remove: UseFieldArrayRemove;
-  defaultValues: DefaultValues<ParseFormSchema>;
-  idx: number;
+  maxLength: number;
+  id: number;
 };
 function LessonActions({
   endTime,
   insert,
   remove,
-  defaultValues,
-  idx,
+  id,
+  maxLength,
 }: LessonActionsProps) {
-  const { getValues } = useFormContext();
+  const { getValues } = useFormContext<{ lessons: Array<LessonSchema> }>();
   const { lessons } = getValues();
   return (
     <div
@@ -32,7 +32,11 @@ function LessonActions({
           icon="ri-add-fill "
           srCaption="Add a new lesson"
           onClick={() => {
-            insert(idx + 1, defaultValues?.lessons?.[0]);
+            insert(id + 1, {
+              start: toTimestamp(Math.min(endTime + 1, maxLength)),
+              end: toTimestamp(Math.min(endTime + 2, maxLength)), // replace with min of maxLength & end
+              name: "",
+            });
           }}
           className={`text-gray-100 hover:bg-blue-700/50 active:text-slate-700`}
         />
@@ -42,7 +46,7 @@ function LessonActions({
           icon="ri-subtract-fill "
           srCaption="Remove this lesson"
           onClick={() => {
-            remove(idx);
+            remove(id);
           }}
           className="text-red-500 hover:bg-red-700/50 "
         />
