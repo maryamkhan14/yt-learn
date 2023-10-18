@@ -1,7 +1,7 @@
 import { ErrorMessage } from "@hookform/error-message";
 import { useFormContext } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
-function Input<Model extends Record<string, any>>({
+function Input<Model extends Record<string, boolean | string | number>>({
   name,
   displayName,
   type = "text",
@@ -11,6 +11,7 @@ function Input<Model extends Record<string, any>>({
   maxLength,
   inputMode = "text",
   displayRemainingCharacters = false,
+  readOnly = false,
 }: {
   name: keyof Model | string;
   displayName: string;
@@ -30,6 +31,8 @@ function Input<Model extends Record<string, any>>({
     | "numeric"
     | "decimal";
   displayRemainingCharacters?: boolean;
+  readOnly?: boolean;
+  defaultValue?: string | number;
 }) {
   const {
     register,
@@ -46,6 +49,7 @@ function Input<Model extends Record<string, any>>({
     containerStyles,
   );
   const isInvalid = !!getFieldState(name as string).invalid;
+  const nameValue: string = watch(name as string) as string;
   return (
     <div className={containerClassName}>
       <div
@@ -54,13 +58,11 @@ function Input<Model extends Record<string, any>>({
       >
         <p className="m-0 whitespace-nowrap p-0">{displayName}</p>
 
-        {displayRemainingCharacters &&
-          watch(name as string)?.length > 0 &&
-          !!maxLength && (
-            <span className=" text-end font-light">
-              {maxLength - watch(name as string).length}
-            </span>
-          )}
+        {displayRemainingCharacters && nameValue?.length > 0 && !!maxLength && (
+          <span className=" text-end font-light">
+            {maxLength - nameValue.length}
+          </span>
+        )}
       </div>
       <div>
         <input
@@ -71,6 +73,7 @@ function Input<Model extends Record<string, any>>({
           placeholder={placeholder}
           maxLength={maxLength}
           inputMode={inputMode}
+          readOnly={readOnly}
         />
       </div>
       <ErrorMessage
@@ -78,7 +81,7 @@ function Input<Model extends Record<string, any>>({
         name={name as string}
         render={({ message }) => (
           <span className="rounded bg-gray-100/50 py-1 text-center  text-slate-700">
-            {message as string}
+            {message}
           </span>
         )}
       />
