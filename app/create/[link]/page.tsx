@@ -3,13 +3,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import toast from "react-hot-toast";
-import { type Link } from "@/app/(landing-page)/schema";
-import VideoBar from "./components/VideoBar";
+import { type VideoLink } from "@/app/(landing-page)/schema";
 import dynamic from "next/dynamic";
 const CourseForm = dynamic(() => import("./components/CourseForm"));
-function Course({ params }: { params: { link: Link } }) {
+function Course({ params }: { params: { link: VideoLink } }) {
   const router = useRouter();
-  const [played, setPlayed] = useState(0);
+  const [, setPlayed] = useState(0);
   const [duration, setDuration] = useState(0);
   const handleError = () => {
     toast.error(
@@ -18,19 +17,21 @@ function Course({ params }: { params: { link: Link } }) {
     router.replace("/");
   };
   return (
-    <div className="wrap max-h-[80%]  flex-wrap justify-center bg-slate-900/20 p-8 text-center">
+    <div className="wrap max-h-[80%]  flex-wrap justify-center bg-slate-900/20 px-8 py-4 text-center">
       <div className="group flex flex-col gap-8">
-        <YouTubePlayer
-          url={decodeURIComponent(params.link)}
-          onProgress={({ played }) => {
-            setPlayed(played);
-          }}
-          onDuration={(duration) => {
-            setDuration(duration);
-          }}
-          onError={handleError}
-        />
-        <VideoBar currentPosition={played} />
+        <span className="self-justify-center flex h-full justify-center self-center md:w-1/2">
+          <YouTubePlayer
+            url={decodeURIComponent(params.link)}
+            onProgress={({ played }) => {
+              setPlayed(played);
+            }}
+            onDuration={(duration) => {
+              setDuration(duration);
+            }}
+            onError={handleError}
+          />
+        </span>
+
         {duration > 0 && <CourseForm duration={duration} />}
       </div>
     </div>
