@@ -44,9 +44,5 @@ export const createCourseSchema = (duration: number) =>
         }
       }),
   });
-export const LessonSchema = z.object({
-  start: z.string().regex(TIMESTAMP_REGEX),
-  end: z.string().regex(TIMESTAMP_REGEX),
-  name: z.string().min(20).max(50),
-});
-export type LessonSchema = z.infer<typeof LessonSchema>;
+type Course = ReturnType<typeof createCourseSchema>;
+export type Lesson = z.infer<Course>["lessons"][number];
