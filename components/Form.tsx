@@ -1,4 +1,5 @@
 "use client";
+import onPromise from "@/lib/promise-handler";
 import { useForm, FormProvider, type FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type ZodObject } from "zod";
@@ -7,7 +8,7 @@ type GenericOnSubmit = (
   data: Record<string, FieldValues>,
   event?: React.BaseSyntheticEvent,
 ) => void;
-function Form<DataSchema extends Record<string, FieldValues>>({
+function Form<DataSchema extends FieldValues>({
   schema,
   onSubmit,
   children,
@@ -17,7 +18,7 @@ function Form<DataSchema extends Record<string, FieldValues>>({
   schema: ZodObject<FieldValues>;
   onSubmit: (data: DataSchema, event?: React.BaseSyntheticEvent) => void;
   children: ReactNode;
-  defaultValues?: Record<string, FieldValues>;
+  defaultValues?: FieldValues;
   arrayName?: string;
   className?: string;
 }) {
@@ -30,7 +31,7 @@ function Form<DataSchema extends Record<string, FieldValues>>({
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={handleSubmit(onSubmit as GenericOnSubmit)}
+        onSubmit={onPromise(handleSubmit(onSubmit as GenericOnSubmit))}
         className={`flex w-full gap-3 ${className}`}
       >
         {children}

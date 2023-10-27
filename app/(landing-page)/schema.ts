@@ -9,4 +9,4 @@ export const LinkFormSchema = z.object({
   link,
 });
 export type LinkFormSchema = z.infer<typeof LinkFormSchema>;
-export type Link = z.infer<typeof link>;
+export type VideoLink = z.infer<typeof link>;
