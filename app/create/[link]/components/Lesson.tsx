@@ -1,6 +1,6 @@
 "use client";
 import { memo, useEffect } from "react";
-import { type LessonSchema } from "../schema";
+import { type Lesson } from "../schema";
 import { toSeconds, toTimestamp } from "../../../../lib/time";
 import LessonActions from "./LessonActions";
 import { type DropTargetMonitor, useDrag, useDrop } from "react-dnd";
@@ -137,7 +137,7 @@ const Lesson = memo(function Lesson({
       <div ref={dragRef} className="hidden self-center text-4xl md:flex">
         <i className="ri-draggable"></i>
       </div>
-      <Input<LessonSchema>
+      <Input<Lesson>
         displayName="Start"
         name={`lessons[${id}].start`}
         type="numeric"
@@ -148,7 +148,7 @@ const Lesson = memo(function Lesson({
         defaultValue={startTime}
         readOnly={true}
       ></Input>
-      <Input<LessonSchema>
+      <Input<Lesson>
         displayName="End"
         name={`lessons[${id}].end`}
         type="numeric"
@@ -158,7 +158,7 @@ const Lesson = memo(function Lesson({
         maxLength={25}
         placeholder="00:00:01 - will be replaced by YT vid's length"
       ></Input>
-      <Input<LessonSchema>
+      <Input<Lesson>
         displayName="Lesson name"
         name={`lessons[${id}].name`}
         type="text"
