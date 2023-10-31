@@ -20,7 +20,7 @@ function Lessons({ totalLength }: { totalLength: number }) {
     e.preventDefault();
     const { lessons } = getValues();
     updateLessons(lessons as LessonType[]);
-    router.replace(`${pathname}/timeline`);
+    router.push(`${pathname}/timeline`);
   }
   return (
     <div className=" flex flex-col items-center gap-7">
