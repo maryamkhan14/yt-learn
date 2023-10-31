@@ -5,7 +5,7 @@ import {
   type UseFieldArrayInsert,
 } from "react-hook-form";
 import CircularIconOnlyButton from "@/components/button/CircularIconOnlyButton";
-import { type LessonSchema } from "../schema";
+import { type Lesson } from "../schema";
 import { toTimestamp } from "../../../../lib/time";
 type LessonActionsProps = {
   endTime: number;
@@ -21,7 +21,7 @@ function LessonActions({
   id,
   maxLength,
 }: LessonActionsProps) {
-  const { getValues } = useFormContext<{ lessons: Array<LessonSchema> }>();
+  const { getValues } = useFormContext<{ lessons: Array<Lesson> }>();
   const { lessons } = getValues();
   return (
     <div

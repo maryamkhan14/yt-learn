@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import HamsterLoader from "./HamsterLoader";
 function Wrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex aspect-video items-center justify-center self-center justify-self-center md:w-1/2">
+    <div className="flex aspect-video w-full items-center justify-center self-center justify-self-center">
       {children}
     </div>
   );
