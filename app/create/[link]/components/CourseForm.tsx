@@ -7,11 +7,14 @@ import { createCourseSchema } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
 import { type z } from "zod";
+import { useCourseStore } from "../hooks/useCourseStore";
+import { useEffect } from "react";
 
 function CourseForm({ duration }: { duration: number }) {
-  const CourseSchema = createCourseSchema(duration);
-  type CourseSchema = z.infer<typeof CourseSchema>;
-  const onSubmit: SubmitHandler<CourseSchema> = async (data) => {
+  const courseSchema = createCourseSchema(duration);
+  type CourseSchema = z.infer<typeof courseSchema>;
+  const updateSchema = useCourseStore((state) => state.updateSchema);
+  const onSubmit: SubmitHandler<CourseSchema> = async (_data) => {
     await new Promise((resolve) => {
       setTimeout(() => {
         alert("it worked!");
@@ -28,10 +31,13 @@ function CourseForm({ duration }: { duration: number }) {
       },
     ],
   };
+  useEffect(() => {
+    updateSchema(courseSchema);
+  }, [courseSchema, updateSchema]);
   return (
     <DndProvider backend={HTML5Backend}>
       <Form<CourseSchema>
-        schema={CourseSchema}
+        schema={courseSchema}
         onSubmit={onSubmit}
         defaultValues={initialValues}
         arrayName="lessons"
