@@ -44,5 +44,5 @@ export const createCourseSchema = (duration: number) =>
         }
       }),
   });
-type Course = ReturnType<typeof createCourseSchema>;
+export type Course = ReturnType<typeof createCourseSchema>;
 export type Lesson = z.infer<Course>["lessons"][number];

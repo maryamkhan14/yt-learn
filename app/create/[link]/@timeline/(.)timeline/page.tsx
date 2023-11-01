@@ -8,13 +8,29 @@ import TimelineElement from "@/components/timeline/TimelineElement";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import { useParams } from "next/navigation";
 import { toSeconds } from "@/lib/time";
-import { TIMESTAMP_REGEX } from "../../schema";
+import { type ZodIssue, type ZodError } from "zod";
+import { type Course } from "../../schema";
+function getAllErrors(schema: Course, lessons: Lesson[]): ZodError | null {
+  const result = schema.safeParse({ lessons });
+  if (result.success === false) return result.error;
+  return null;
+}
+function getIssue(
+  issues: Array<ZodIssue> | undefined,
+  id: number,
+): ZodIssue | null {
+  if (!issues) return null;
+  return issues.find((issue) => issue.path.includes(id)) ?? null;
+}
 
 function Timeline() {
   const lessons: Lesson[] = useCourseStore(
     (store: CourseStore) => store?.lessons,
   );
+  const schema: Course = useCourseStore((store: CourseStore) => store?.schema)!;
   const { link } = useParams();
+  const issues = getAllErrors(schema, lessons)?.issues;
+
   return (
     <Modal size={"xl"}>
       <VerticalTimeline className="prose prose-invert" lineColor={"#60a5fa"}>
@@ -22,14 +38,14 @@ function Timeline() {
           <TimelineElement
             date={lesson.end}
             key={id}
-            error={!TIMESTAMP_REGEX.test(lesson.end)}
+            error={!!getIssue(issues, id)}
           >
             <h3
               className={`vertical-timeline-element-title ${
                 !lesson.name && "italic"
-              }`}
+              } break-all`}
             >
-              {!lesson.name && "No name provided."}
+              {!!lesson.name ? lesson.name : "No name provided."}
             </h3>
 
             <div className="my-4 border border-dashed">
@@ -45,10 +61,10 @@ function Timeline() {
                 }}
               />
             </div>
-            {!TIMESTAMP_REGEX.test(lesson.end) && (
-              <h4 className="text-sm text-red-400">
-                Ending timestamp must be in HH:MM:SS format. The course cannot
-                be generated unless this lesson is fixed.
+            {!!getIssue(issues, id) && (
+              <h4 className="text-sm  text-red-300">
+                This lesson contains the following issue:{" "}
+                <span className="italic">{getIssue(issues, id)?.message}</span>
               </h4>
             )}
           </TimelineElement>

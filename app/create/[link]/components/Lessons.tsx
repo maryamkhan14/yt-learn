@@ -20,7 +20,7 @@ function Lessons({ totalLength }: { totalLength: number }) {
     e.preventDefault();
     const { lessons } = getValues();
     updateLessons(lessons as LessonType[]);
-    router.replace(`${pathname}/timeline`);
+    router.push(`${pathname}/timeline`);
   }
   return (
     <div className=" flex flex-col items-center gap-7">
@@ -29,7 +29,7 @@ function Lessons({ totalLength }: { totalLength: number }) {
         className="group/tl-btn relative rounded-lg border-2 px-4 py-2 transition-all ease-in hover:px-6"
       >
         <div className="absolute inset-0 h-full w-0 rounded-lg bg-red-800 transition-all duration-[250ms]  ease-out group-hover/tl-btn:w-full" />
-        <span className="relative rounded-lg text-black group-hover:text-white">
+        <span className="relative rounded-lg text-white group-hover:text-white">
           View timeline
         </span>
       </button>
