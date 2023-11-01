@@ -13,7 +13,7 @@ import { useEffect } from "react";
 function CourseForm({ duration }: { duration: number }) {
   const courseSchema = createCourseSchema(duration);
   type CourseSchema = z.infer<typeof courseSchema>;
-  const updateSchema = useCourseStore((state) => state.updateSchema);
+  const updateDuration = useCourseStore((state) => state.updateDuration);
   const onSubmit: SubmitHandler<CourseSchema> = async (_data) => {
     await new Promise((resolve) => {
       setTimeout(() => {
@@ -32,8 +32,8 @@ function CourseForm({ duration }: { duration: number }) {
     ],
   };
   useEffect(() => {
-    updateSchema(courseSchema);
-  }, [courseSchema, updateSchema]);
+    updateDuration(duration);
+  }, [duration, updateDuration]);
   return (
     <DndProvider backend={HTML5Backend}>
       <Form<CourseSchema>
