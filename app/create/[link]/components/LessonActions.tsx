@@ -38,7 +38,7 @@ function LessonActions({
               name: "",
             });
           }}
-          className={`text-gray-100 hover:bg-blue-700/50 active:text-slate-700`}
+          buttonStyles={`text-gray-100 hover:bg-blue-700/50 active:text-slate-700`}
         />
       )}
       {lessons.length > 1 && (
@@ -48,7 +48,7 @@ function LessonActions({
           onClick={() => {
             remove(id);
           }}
-          className="text-red-500 hover:bg-red-700/50 "
+          buttonStyles="text-red-500 hover:bg-red-700/50 "
         />
       )}
     </div>

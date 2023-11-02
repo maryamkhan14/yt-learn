@@ -1,21 +1,20 @@
-import { BaseSyntheticEvent } from "react";
-
+import { twMerge } from "tailwind-merge";
+import { type CircularIconOnlyButtonProps } from "./types";
+import { memo } from "react";
 function CircularIconOnlyButton({
   icon,
   srCaption,
-  className,
+  buttonStyles,
   onClick,
   type = "button",
-}: {
-  className: string;
-  icon: string;
-  srCaption: string;
-  onClick?: (e: BaseSyntheticEvent) => void;
-  type?: "submit" | "button";
-}) {
+}: CircularIconOnlyButtonProps) {
+  const circularIconOnlyButtonStyle = twMerge(
+    "h-12 w-12 rounded-full border border-gray-200  p-1 text-2xl outline-none  active:border-blue-600  active:bg-white active:ring-0 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400",
+    buttonStyles,
+  );
   return (
     <button
-      className={`${className} h-12 w-12 rounded-full border border-gray-200  p-1 text-2xl outline-none  active:border-blue-600  active:bg-white active:ring-0 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400`}
+      className={circularIconOnlyButtonStyle}
       onClick={onClick}
       type={type}
     >
@@ -25,4 +24,4 @@ function CircularIconOnlyButton({
   );
 }
 
-export default CircularIconOnlyButton;
+export default memo(CircularIconOnlyButton);
