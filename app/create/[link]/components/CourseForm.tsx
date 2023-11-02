@@ -7,9 +7,55 @@ import { createCourseSchema } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
 import { type z } from "zod";
-import { useCourseStore } from "../hooks/useCourseStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import CircularIconOnlyButton from "../../../../components/button/CircularIconOnlyButton";
+import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
+import HamsterLoader from "@/components/HamsterLoader";
+import { dayJsInstance as dayjs } from "@/lib/time";
 
+function CourseActions() {
+  useEffect(() => {
+    void useCourseStore.persist.rehydrate();
+  }, []);
+  const hasHydrated: boolean = useCourseStore(
+    (store: CourseStore) => store?._hasHydrated,
+  );
+  const lastSaved: string = useCourseStore(
+    (store: CourseStore) => store?.lastSaved,
+  );
+  const [relativeTime, setRelativeTime] = useState(dayjs().fromNow());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRelativeTime(dayjs(lastSaved).fromNow());
+    }, 1000 * 5);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [lastSaved]);
+  if (!hasHydrated)
+    return (
+      <div className="flex h-full w-full grow justify-center bg-slate-900/40">
+        <HamsterLoader />
+      </div>
+    );
+
+  return (
+    <div className=" flex flex-col items-center gap-7">
+      <section className="group-save flex items-center gap-3">
+        <CircularIconOnlyButton
+          icon="ri-check-fill"
+          srCaption="Construct the course"
+          type="submit"
+          buttonStyles="text-green-500 hover:bg-green-700/50 "
+        />
+        <p className="text-sm italic text-gray-500">
+          {" "}
+          Last saved: {relativeTime}
+        </p>
+      </section>
+    </div>
+  );
+}
 function CourseForm({ duration }: { duration: number }) {
   const courseSchema = createCourseSchema(duration);
   type CourseSchema = z.infer<typeof courseSchema>;
@@ -44,6 +90,7 @@ function CourseForm({ duration }: { duration: number }) {
         className="flex-col"
       >
         <Lessons totalLength={duration} />
+        <CourseActions />
       </Form>
     </DndProvider>
   );
