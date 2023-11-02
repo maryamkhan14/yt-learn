@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
 import { type Lesson as LessonType } from "../schema";
 import { memo, useCallback, useEffect, useRef } from "react";
+import FilledButton from "@/components/button/FilledButton";
 
 function Lessons({ totalLength }: { totalLength: number }) {
   const loadedSavedLessons = useRef<boolean>(false);
@@ -48,15 +49,11 @@ function Lessons({ totalLength }: { totalLength: number }) {
   );
   return (
     <>
-      <button
+      <FilledButton
         onClick={viewTimeline}
-        className="group/tl-btn relative rounded-lg border-2 px-4 py-2 transition-all ease-in hover:px-6"
-      >
-        <div className="absolute inset-0 h-full w-0 rounded-lg bg-red-800 transition-all duration-[250ms]  ease-out group-hover/tl-btn:w-full" />
-        <span className="relative rounded-lg text-white group-hover:text-white">
-          View timeline
-        </span>
-      </button>
+        text="View Timeline"
+        buttonStyles="w-1/4 self-center"
+      />
       {fields.map((lesson, id) => (
         <Lesson
           key={lesson.id}
