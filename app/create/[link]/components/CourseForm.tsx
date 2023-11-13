@@ -1,4 +1,8 @@
 "use client";
+
+import { usePathname, useRouter } from "next/navigation";
+import FilledButton from "@/components/button/FilledButton";
+
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { type SubmitHandler } from "react-hook-form";
@@ -7,13 +11,31 @@ import { createCourseSchema } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
 import { type z } from "zod";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CircularIconOnlyButton from "../../../../components/button/CircularIconOnlyButton";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
 import HamsterLoader from "@/components/HamsterLoader";
 import { dayJsInstance as dayjs } from "@/lib/time";
 
-function CourseActions() {
+function TimelineButton() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const viewTimeline = useCallback(
+    (e: React.BaseSyntheticEvent) => {
+      e.preventDefault();
+      router.push(`${pathname}/timeline`);
+    },
+    [pathname, router],
+  );
+  return (
+    <FilledButton
+      onClick={viewTimeline}
+      text="View Timeline"
+      buttonStyles=" self-center"
+    />
+  );
+}
+function LastSaved() {
   useEffect(() => {
     void useCourseStore.persist.rehydrate();
   }, []);
@@ -40,6 +62,11 @@ function CourseActions() {
     );
 
   return (
+    <p className="text-sm italic text-gray-400"> Last saved: {relativeTime}</p>
+  );
+}
+function CourseActions() {
+  return (
     <div className=" flex flex-col items-center gap-7">
       <section className="group-save flex items-center gap-3">
         <CircularIconOnlyButton
@@ -48,10 +75,6 @@ function CourseActions() {
           type="submit"
           buttonStyles="text-green-500 hover:bg-green-700/50 "
         />
-        <p className="text-sm italic text-gray-500">
-          {" "}
-          Last saved: {relativeTime}
-        </p>
       </section>
     </div>
   );
@@ -89,6 +112,10 @@ function CourseForm({ duration }: { duration: number }) {
         arrayName="lessons"
         className="flex-col"
       >
+        <article className="flex w-full justify-center gap-3">
+          <TimelineButton />
+          <LastSaved />
+        </article>
         <Lessons totalLength={duration} />
         <CourseActions />
       </Form>
