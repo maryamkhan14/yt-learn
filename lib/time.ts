@@ -1,5 +1,8 @@
 import { TIMESTAMP_REGEX } from "../app/create/[link]/schema";
-
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
+export const dayJsInstance = dayjs;
 export function toSeconds(timestamp: string): number {
   if (TIMESTAMP_REGEX.test(timestamp)) {
     const times = timestamp.split(":");
