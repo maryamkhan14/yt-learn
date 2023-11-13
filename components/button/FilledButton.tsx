@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { type FilledButtonProps } from "./types";
 import { twMerge } from "tailwind-merge";
 
@@ -41,4 +42,4 @@ function FilledButton({
   );
 }
 
-export default FilledButton;
+export default memo(FilledButton);

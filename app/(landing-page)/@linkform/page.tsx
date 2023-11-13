@@ -33,7 +33,7 @@ function LinkForm() {
           icon="ri-arrow-right-s-line"
           srCaption="Load YouTube video"
           type="submit"
-          className="h-16 w-16 text-5xl text-yellow-300 group-hover:animate-pulse"
+          buttonStyles="h-16 w-16 text-5xl text-yellow-300 group-hover:animate-pulse"
         />
       </Form>
     </div>
