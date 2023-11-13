@@ -3,7 +3,7 @@ import { memo, useEffect } from "react";
 import { type Lesson } from "../schema";
 import { toSeconds, toTimestamp } from "../../../../lib/time";
 import LessonActions from "./LessonActions";
-import { type DropTargetMonitor, useDrag, useDrop } from "react-dnd";
+import { useDrag, useDrop } from "react-dnd";
 import {
   type FieldValues,
   useFormContext,
@@ -36,7 +36,28 @@ const Lesson = memo(function Lesson({
   const { watch, setValue } = useFormContext();
   const startTime = toSeconds(watch(`lessons[${id}].start`) as string);
   const endTime = toSeconds(watch(`lessons[${id}].end`) as string);
-
+  function updateStartValue(toUpdate: number) {
+    const lessons: Lesson[] = watch("lessons") as Lesson[];
+    if (toUpdate >= lessons.length) return;
+    if (toUpdate === 0) {
+      setValue(`lessons[${toUpdate}].start`, "00:00:00");
+    } else {
+      const prevEndTimestamp = lessons[toUpdate - 1]!.end;
+      const prevEndSeconds = toSeconds(prevEndTimestamp);
+      if (startTime != prevEndSeconds + 1)
+        setValue(
+          `lessons[${toUpdate}].start`,
+          toTimestamp(Math.min(prevEndSeconds + 1, maxLength)),
+        );
+    }
+  }
+  function updateStartValues(draggedId: number, id: number) {
+    if (draggedId == id) return;
+    const first = Math.min(draggedId, id);
+    const second = Math.max(draggedId, id);
+    updateStartValue(first);
+    updateStartValue(second);
+  }
   const [{ handlerId, isDragging }, drag, preview] = useDrag(() => ({
     type: "LESSON",
     item: { id },
@@ -56,11 +77,8 @@ const Lesson = memo(function Lesson({
     },
   }));
 
-  const [{ canDrop }, drop] = useDrop(() => ({
+  const [, drop] = useDrop(() => ({
     accept: "LESSON",
-    collect: (monitor: DropTargetMonitor) => ({
-      canDrop: monitor.canDrop(),
-    }),
     hover: (item: Item, monitor) => {
       const { id: draggedId } = item;
       if (!previewRef.current) {
@@ -93,35 +111,12 @@ const Lesson = memo(function Lesson({
         return;
       }
       move(draggedId, id);
+      updateStartValues(draggedId, id);
     },
   }));
 
   useEffect(() => {
-    if (canDrop) {
-      console.log("firing");
-      if (id === 0) setValue(`lessons[${id}].start`, "00:00:00");
-      else {
-        const prevEndTimestamp = watch(`lessons[${id - 1}].end`) as string;
-        const prevEndSeconds = toSeconds(prevEndTimestamp);
-        if (id > 0 && startTime != prevEndSeconds + 1)
-          setValue(
-            `lessons[${id}].start`,
-            toTimestamp(Math.min(prevEndSeconds + 1, maxLength)),
-          );
-      }
-    }
-  }, [canDrop]);
-
-  useEffect(() => {
-    if (canDrop) {
-      console.log("firing second");
-      if (watch(`lessons[${id + 1}].start`)) {
-        setValue(
-          `lessons[${id + 1}].start`,
-          toTimestamp(Math.min(endTime + 1, maxLength)),
-        );
-      }
-    }
+    updateStartValue(id + 1);
   }, [endTime]);
 
   drag(dragRef);
@@ -129,7 +124,7 @@ const Lesson = memo(function Lesson({
   return (
     <div
       ref={previewRef}
-      className={`my-3 flex w-full flex-col gap-3 border-2 md:flex-row ${
+      className={`my-3 flex w-full flex-col gap-3 md:flex-row ${
         isDragging ? "opacity-0" : "opacity-1"
       }`}
       data-handler-id={handlerId}
@@ -179,4 +174,4 @@ const Lesson = memo(function Lesson({
   );
 });
 
-export default Lesson;
+export default memo(Lesson);
