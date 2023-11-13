@@ -33,9 +33,8 @@ function FilledButton({
       onClick={onClick}
       className={outerButtonStyles}
     >
-      {icon && <i className={`${icon} mr-2 p-0`}></i>}
-
       <div className={innerDivStyles} />
+      {icon && <i className={`relative ${icon} mr-2 p-0`}></i>}
       <span className={buttonTextStyles}>{text}</span>
       <span className="sr-only">{srCaption}</span>
     </button>
