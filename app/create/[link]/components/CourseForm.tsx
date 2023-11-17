@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import FilledButton from "@/components/button/FilledButton";
 
 import { DndProvider } from "react-dnd";
@@ -11,49 +11,29 @@ import { createCourseSchema } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
 import { type z } from "zod";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import CircularIconOnlyButton from "../../../../components/button/CircularIconOnlyButton";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
 import HamsterLoader from "@/components/HamsterLoader";
-import { dayJsInstance as dayjs } from "@/lib/time";
+import useHydrated from "../hooks/useHydrated";
 
 function TimelineButton() {
   const router = useRouter();
   const pathname = usePathname();
-  const viewTimeline = useCallback(
-    (e: React.BaseSyntheticEvent) => {
-      e.preventDefault();
-      router.push(`${pathname}/timeline`);
-    },
-    [pathname, router],
-  );
   return (
     <FilledButton
-      onClick={viewTimeline}
+      onClick={() => router.push(`${pathname}/timeline`)}
       text="View Timeline"
       buttonStyles=" self-center"
     />
   );
 }
 function LastSaved() {
-  useEffect(() => {
-    void useCourseStore.persist.rehydrate();
-  }, []);
-  const hasHydrated: boolean = useCourseStore(
-    (store: CourseStore) => store?._hasHydrated,
+  console.log("re-rendering");
+  const hasHydrated = useHydrated();
+  const relativeSaveTimestamp: string = useCourseStore(
+    (store: CourseStore) => store?.relativeSaveTimestamp,
   );
-  const lastSaved: string = useCourseStore(
-    (store: CourseStore) => store?.lastSaved,
-  );
-  const [relativeTime, setRelativeTime] = useState(dayjs().fromNow());
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRelativeTime(dayjs(lastSaved).fromNow());
-    }, 1000 * 5);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [lastSaved]);
   if (!hasHydrated)
     return (
       <div className="flex h-full w-full grow justify-center bg-slate-900/40">
@@ -62,7 +42,10 @@ function LastSaved() {
     );
 
   return (
-    <p className="text-sm italic text-gray-400"> Last saved: {relativeTime}</p>
+    <p className="text-sm italic text-gray-400">
+      {" "}
+      Last saved: {relativeSaveTimestamp}
+    </p>
   );
 }
 function CourseActions() {
