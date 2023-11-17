@@ -28,7 +28,7 @@ function Lessons({ totalLength }: { totalLength: number }) {
       setValue("lessons", savedLessons, { shouldValidate: true });
       loadedSavedLessons.current = true;
     }
-    const interval = setInterval(saveProgress, 60 * 1000);
+    const interval = setInterval(saveProgress, 1 * 1000);
     return () => {
       clearInterval(interval);
     };
