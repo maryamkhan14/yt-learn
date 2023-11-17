@@ -29,7 +29,6 @@ function TimelineButton() {
   );
 }
 function LastSaved() {
-  console.log("re-rendering");
   const hasHydrated = useHydrated();
   const relativeSaveTimestamp: string = useCourseStore(
     (store: CourseStore) => store?.relativeSaveTimestamp,
@@ -63,16 +62,14 @@ function CourseActions() {
   );
 }
 function CourseForm({ duration }: { duration: number }) {
+  const router = useRouter();
+  const { link } = useParams();
+
   const courseSchema = createCourseSchema(duration);
   type CourseSchema = z.infer<typeof courseSchema>;
   const updateDuration = useCourseStore((state) => state.updateDuration);
-  const onSubmit: SubmitHandler<CourseSchema> = async (_data) => {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        alert("it worked!");
-        resolve(undefined);
-      }, 3000);
-    });
+  const onSubmit: SubmitHandler<CourseSchema> = (_data) => {
+    router.push(`/create/${link as string}/confirm`);
   };
   const initialValues = {
     lessons: [
