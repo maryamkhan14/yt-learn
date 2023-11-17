@@ -1,19 +1,34 @@
 "use client";
-import CourseTimeline from "../components/CourseTimeline";
+import "react-vertical-timeline-component/style.min.css";
 import { useParams, useRouter } from "next/navigation";
-
+import CourseTimeline from "../components/CourseTimeline";
+import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
+import { type Lesson } from "../schema";
+import { type ZodIssue } from "zod";
+import HamsterLoader from "@/components/HamsterLoader";
+import useLessonIssues from "../hooks/useLessonIssues";
+import useHydrated from "../hooks/useHydrated";
 function Timeline() {
   const { link } = useParams();
   const router = useRouter();
-  function viewCourseCreationPage(e: React.BaseSyntheticEvent) {
-    e.preventDefault();
-    router.replace(`/create/${link as string}`);
-  }
+  const hasHydrated = useHydrated();
+  const lessons: Lesson[] = useCourseStore(
+    (store: CourseStore) => store?.lessons,
+  );
+  const issues: ZodIssue[] | undefined | null = useLessonIssues(hasHydrated);
+
+  if (!hasHydrated)
+    return (
+      <div className="flex h-full w-full grow justify-center bg-slate-900/40">
+        <HamsterLoader />
+      </div>
+    );
+
   return (
     <>
-      <CourseTimeline />
+      <CourseTimeline link={link as string} lessons={lessons} issues={issues} />
       <button
-        onClick={viewCourseCreationPage}
+        onClick={() => router.replace(".")}
         role="link"
         className="group/tl-btn relative m-2  w-1/4 self-center rounded-lg border-2 px-4 py-2 transition-all ease-in hover:px-6"
       >
