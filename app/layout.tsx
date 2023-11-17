@@ -2,11 +2,11 @@ import "./globals.css";
 import "remixicon/fonts/remixicon.css";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import SessionProvider from "@/components/SessionProvider";
 import Header from "@/components/Header";
-const inter = Inter({ subsets: ["latin"] });
+import authOptions from "@/lib/auth";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,12 +18,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} relative flex  h-fit min-h-screen w-full flex-col`}
-      >
+      <body className={`relative flex  h-fit min-h-screen w-full flex-col`}>
         <SessionProvider session={session}>
           <Image
             src="/bg-dark.jpg"
@@ -37,6 +35,7 @@ export default async function RootLayout({
           />
           <Header />
           <main className="backdrop-blur-xs prose prose-invert z-50 flex h-full w-full max-w-none grow flex-col p-10">
+            <Toaster position="top-center" />
             {children}
           </main>
         </SessionProvider>
