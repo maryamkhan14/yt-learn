@@ -12,15 +12,20 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 model Course {
-    id        String      @id @default(cuid())
-    createdAt DateTime @default(now())
-    videoId String 
-    authorId String 
-
-    @@index([authorId])
+    id          String    @id @default(cuid())
+    createdAt   DateTime  @default(now())
+    duration    Int
+    link        String 
+    courses     UserCourse[]
 }
 
-
+model UserCourse {
+    courseId    String
+    creatorId   String
+    user        User      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+    course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    @@id([courseId, creatorId])
+}
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -56,6 +61,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  courses       UserCourse[]
 }
 
 model VerificationToken {
