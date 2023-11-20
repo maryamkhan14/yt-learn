@@ -3,6 +3,7 @@ import { type Lesson } from "../schema";
 import { persist } from "zustand/middleware";
 import { dayJsInstance as dayjs } from "@/lib/time";
 interface State {
+  link: string;
   lessons: Lesson[];
   duration: number;
   _hasHydrated: boolean;
@@ -10,12 +11,14 @@ interface State {
   isoSaveTimestamp: string;
 }
 interface Actions {
+  setLink: (link: string) => void;
   updateLessons: (lessons: Lesson[]) => void;
-  updateDuration: (duration: number) => void;
+  setDuration: (duration: number) => void;
   updateLastSaved: () => void;
   setHasHydrated: (state: State | boolean) => void;
 }
 const INITIAL_STATE: State = {
+  link: "",
   lessons: [],
   duration: 0,
   relativeSaveTimestamp: "",
@@ -26,13 +29,15 @@ const INITIAL_STATE: State = {
 export const useCourseStore = create<State & Actions>()(
   persist(
     (set, _get) => ({
+      link: INITIAL_STATE.link,
       lessons: INITIAL_STATE.lessons,
       duration: INITIAL_STATE.duration,
       relativeSaveTimestamp: INITIAL_STATE.relativeSaveTimestamp,
       isoSaveTimestamp: INITIAL_STATE.isoSaveTimestamp,
       _hasHydrated: false,
+      setLink: (link: string) => set((_state) => ({ link })),
       updateLessons: (lessons: Lesson[]) => set((_state) => ({ lessons })),
-      updateDuration: (duration: number) => set((_state) => ({ duration })),
+      setDuration: (duration: number) => set((_state) => ({ duration })),
       updateLastSaved: () =>
         set((state) => {
           if (

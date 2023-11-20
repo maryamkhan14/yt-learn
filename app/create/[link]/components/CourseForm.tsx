@@ -2,20 +2,17 @@
 
 import { useParams, usePathname, useRouter } from "next/navigation";
 import FilledButton from "@/components/button/FilledButton";
-
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { type SubmitHandler } from "react-hook-form";
 import Form from "@/components/Form";
-import { createCourseSchema } from "../schema";
+import { type CourseSchemaType, CourseSchema } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
-import { type z } from "zod";
-import { useEffect } from "react";
 import CircularIconOnlyButton from "../../../../components/button/CircularIconOnlyButton";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
 import HamsterLoader from "@/components/HamsterLoader";
-import useHydrated from "../hooks/useHydrated";
+import useHydrated from "../../../hooks/useHydrated";
 
 function TimelineButton() {
   const router = useRouter();
@@ -64,14 +61,14 @@ function CourseActions() {
 function CourseForm({ duration }: { duration: number }) {
   const router = useRouter();
   const { link } = useParams();
-
-  const courseSchema = createCourseSchema(duration);
-  type CourseSchema = z.infer<typeof courseSchema>;
-  const updateDuration = useCourseStore((state) => state.updateDuration);
-  const onSubmit: SubmitHandler<CourseSchema> = (_data) => {
+  const setDuration = useCourseStore((state) => state.setDuration);
+  const setLink = useCourseStore((state) => state.setLink);
+  const onSubmit: SubmitHandler<CourseSchemaType> = (_data) => {
     router.push(`/create/${link as string}/confirm`);
   };
   const initialValues = {
+    link,
+    duration,
     lessons: [
       {
         start: "00:00:00",
@@ -80,13 +77,12 @@ function CourseForm({ duration }: { duration: number }) {
       },
     ],
   };
-  useEffect(() => {
-    updateDuration(duration);
-  }, [duration, updateDuration]);
+  setDuration(duration);
+  setLink(decodeURIComponent(link as string));
   return (
     <DndProvider backend={HTML5Backend}>
-      <Form<CourseSchema>
-        schema={courseSchema}
+      <Form<CourseSchemaType>
+        schema={CourseSchema}
         onSubmit={onSubmit}
         defaultValues={initialValues}
         arrayName="lessons"
