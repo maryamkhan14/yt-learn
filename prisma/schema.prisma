@@ -17,8 +17,16 @@ model Course {
     duration    Int
     link        String 
     courses     UserCourse[]
+    lessons     Lesson[]
 }
-
+model Lesson {
+    id          String    @id @default(cuid())  
+    start        Int
+    end          Int
+    name        String
+    courseId    String
+    course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
 model UserCourse {
     courseId    String
     creatorId   String
