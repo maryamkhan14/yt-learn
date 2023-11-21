@@ -2,7 +2,7 @@
 import onPromise from "@/lib/promise-handler";
 import { useForm, FormProvider, type FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ZodEffects, type ZodObject } from "zod";
+import { ZodEffects, type ZodObject } from "zod";
 import { type ReactNode } from "react";
 type GenericOnSubmit = (
   data: Record<string, FieldValues>,

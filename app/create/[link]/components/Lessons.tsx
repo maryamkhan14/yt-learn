@@ -1,15 +1,11 @@
 "use client";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Lesson from "./Lesson";
-import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
+import { useCourseStore } from "../hooks/useCourseStore";
 import { type Lesson as LessonType } from "../schema";
-import { memo, useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect } from "react";
 
 function Lessons({ totalLength }: { totalLength: number }) {
-  const loadedSavedLessons = useRef<boolean>(false);
-  const savedLessons: LessonType[] = useCourseStore(
-    (store: CourseStore) => store?.lessons,
-  );
   const updateLastSaved = useCourseStore((state) => state.updateLastSaved);
   const updateLessons = useCourseStore((state) => state.updateLessons);
   const { control, setValue, getValues } = useFormContext();
@@ -24,15 +20,11 @@ function Lessons({ totalLength }: { totalLength: number }) {
   }, [getValues, updateLastSaved, updateLessons]);
 
   useEffect(() => {
-    if (!loadedSavedLessons.current && savedLessons?.length) {
-      setValue("lessons", savedLessons, { shouldValidate: true });
-      loadedSavedLessons.current = true;
-    }
     const interval = setInterval(saveProgress, 1 * 1000);
     return () => {
       clearInterval(interval);
     };
-  }, [saveProgress, savedLessons, setValue]);
+  }, [saveProgress, setValue]);
   return (
     <section className="flex h-full flex-col gap-8">
       {fields.map((lesson, id) => (

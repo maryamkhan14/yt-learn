@@ -6,13 +6,11 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { type SubmitHandler } from "react-hook-form";
 import Form from "@/components/Form";
-import { type CourseSchemaType, CourseSchema } from "../schema";
+import { type CourseSchemaType, CourseSchema, type Lesson } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
 import CircularIconOnlyButton from "../../../../components/button/CircularIconOnlyButton";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
-import HamsterLoader from "@/components/HamsterLoader";
-import useHydrated from "../../../hooks/useHydrated";
 
 function TimelineButton() {
   const router = useRouter();
@@ -26,17 +24,9 @@ function TimelineButton() {
   );
 }
 function LastSaved() {
-  const hasHydrated = useHydrated();
   const relativeSaveTimestamp: string = useCourseStore(
     (store: CourseStore) => store?.relativeSaveTimestamp,
   );
-  if (!hasHydrated)
-    return (
-      <div className="flex h-full w-full grow justify-center bg-slate-900/40">
-        <HamsterLoader />
-      </div>
-    );
-
   return (
     <p className="text-sm italic text-gray-400">
       {" "}
@@ -61,24 +51,30 @@ function CourseActions() {
 function CourseForm({ duration }: { duration: number }) {
   const router = useRouter();
   const { link } = useParams();
+  const savedLessons: Lesson[] = useCourseStore(
+    (store: CourseStore) => store?.lessons,
+  );
   const setDuration = useCourseStore((state) => state.setDuration);
   const setLink = useCourseStore((state) => state.setLink);
   const onSubmit: SubmitHandler<CourseSchemaType> = (_data) => {
     router.push(`/create/${link as string}/confirm`);
   };
   const initialValues = {
-    link,
+    link: decodeURIComponent(link as string),
     duration,
-    lessons: [
-      {
-        start: "00:00:00",
-        end: toTimestamp(duration), ///YT vid length
-        name: "",
-      },
-    ],
+    lessons: savedLessons?.length
+      ? savedLessons
+      : [
+          {
+            start: "00:00:00",
+            end: toTimestamp(duration), ///YT vid length
+            name: "",
+          },
+        ],
   };
-  setDuration(duration);
   setLink(decodeURIComponent(link as string));
+  setDuration(duration);
+
   return (
     <DndProvider backend={HTML5Backend}>
       <Form<CourseSchemaType>
