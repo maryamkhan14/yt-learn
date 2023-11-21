@@ -1,44 +1,54 @@
 "use client";
+import { trpc } from "@/lib/api";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+import { type ZodIssue } from "zod";
+import toast from "react-hot-toast";
 import { UNAUTHENTICATED } from "@/lib/constants/auth";
-import { useParams, useRouter } from "next/navigation";
+import FilledButton from "@/components/button/FilledButton";
+import Loading from "@/app/loading";
+import HydrationLoader from "@/components/HydrationLoader";
 import CourseTimeline from "../components/CourseTimeline";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
-import { type Lesson } from "../schema";
-import { type ZodIssue } from "zod";
 import useLessonIssues from "../hooks/useLessonIssues";
-import useHydrated from "../hooks/useHydrated";
-import FilledButton from "@/components/button/FilledButton";
-import HamsterLoader from "@/components/HamsterLoader";
-import { useSession } from "next-auth/react";
-import toast from "react-hot-toast";
-import { useEffect } from "react";
-function Confirm() {
-  const hasHydrated = useHydrated();
-  const { link } = useParams();
+import { type CourseSchemaType } from "../schema";
+function ConfirmPage() {
   const router = useRouter();
-  const lessons: Lesson[] = useCourseStore(
-    (store: CourseStore) => store?.lessons,
-  );
-  const { status } = useSession();
-  const issues: ZodIssue[] | undefined | null = useLessonIssues(hasHydrated);
-  useEffect(() => {
-    if (status === UNAUTHENTICATED)
-      toast.success(
-        "Pro-tip: if you want to be able to edit your course later on, you could sign up and continue from there!",
-        { id: "signupReminder", duration: 2000, icon: "👋" },
+  const pathname = usePathname();
+  const { mutate, isLoading: isPosting } = trpc.courses.post.useMutation({
+    onSuccess: () => {
+      //router.push(`${pathname}/save`);
+      // invalidate the getCourses query
+    },
+    onError: (e) => {
+      const zodError = e.data?.zodError?.fieldErrors.content;
+      toast.error(
+        zodError?.[0]
+          ? zodError[0]
+          : "Something went wrong. Please try again later!",
       );
-  }, [status]);
-
-  if (!hasHydrated)
-    return (
-      <div className="flex h-full w-full grow justify-center bg-slate-900/40">
-        <HamsterLoader />
-      </div>
+    },
+  });
+  const course: CourseSchemaType = useCourseStore((store: CourseStore) => ({
+    lessons: store?.lessons,
+    link: store?.link,
+    duration: store?.duration,
+  }));
+  const { status } = useSession();
+  const issues: ZodIssue[] | undefined | null = useLessonIssues();
+  if (status === UNAUTHENTICATED)
+    toast.success(
+      "Pro-tip: if you want to be able to edit your course later on, you could sign up and continue from there!",
+      { id: "signupReminder", duration: 2000, icon: "👋" },
     );
   return (
     <section className="flex flex-col">
       <h1 className="my-4 text-center text-blue-200">How does this look?</h1>
-      <CourseTimeline link={link as string} lessons={lessons} issues={issues} />
+      <CourseTimeline
+        link={course.link}
+        lessons={course.lessons}
+        issues={issues}
+      />
       <article className="flex w-full flex-col justify-evenly gap-4 self-center md:w-1/2 md:flex-row md:gap-0">
         <FilledButton
           onClick={() => router.replace(".")}
@@ -55,7 +65,7 @@ function Confirm() {
           </div>
         ) : (
           <FilledButton
-            onClick={() => router.push("./save")}
+            onClick={() => mutate({ ...course })}
             text="Looks good!"
             role="link"
             fillStyles={"bg-blue-800"}
@@ -64,6 +74,14 @@ function Confirm() {
         )}
       </article>
     </section>
+  );
+}
+function Confirm() {
+  return (
+    <HydrationLoader
+      duringHydration={<Loading />}
+      afterHydration={<ConfirmPage />}
+    />
   );
 }
 
