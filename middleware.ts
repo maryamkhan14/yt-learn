@@ -2,9 +2,10 @@ import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
   pages: {
-    signIn: "/signin",
+    signIn: "/login",
   },
 });
+/*matcher: ["/(api|trpc)(.*)"], */
 export const config = {
-  matcher: ["/(api|trpc)(.*)"],
+  matcher: ["/dashboard"],
 };
