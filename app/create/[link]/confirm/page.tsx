@@ -50,27 +50,33 @@ function ConfirmPage() {
         issues={issues}
       />
       <article className="flex w-full flex-col justify-evenly gap-4 self-center md:w-1/2 md:flex-row md:gap-0">
-        <FilledButton
-          onClick={() => router.replace(".")}
-          text="Modify course"
-          role="link"
-          fillStyles={"bg-red-800"}
-          buttonStyles={
-            "self-center w-full md:w-2/3 m-2 border-red-300 border-2"
-          }
-        />
-        {!!issues ? (
-          <div className="px-3 text-center font-bold text-red-400">
-            Your course cannot be created yet. Please fix existing errors.
-          </div>
+        {isPosting ? (
+          <Loading />
         ) : (
-          <FilledButton
-            onClick={() => mutate({ ...course })}
-            text="Looks good!"
-            role="link"
-            fillStyles={"bg-blue-800"}
-            buttonStyles={"self-center w-full md:w-2/3 m-2 border-blue-300"}
-          />
+          <>
+            <FilledButton
+              onClick={() => router.replace(".")}
+              text="Modify course"
+              role="link"
+              fillStyles={"bg-red-800"}
+              buttonStyles={
+                "self-center w-full md:w-2/3 m-2 border-red-300 border-2"
+              }
+            />
+            {!!issues ? (
+              <div className="px-3 text-center font-bold text-red-400">
+                Your course cannot be created yet. Please fix existing errors.
+              </div>
+            ) : (
+              <FilledButton
+                onClick={() => mutate({ ...course })}
+                text="Looks good!"
+                role="link"
+                fillStyles={"bg-blue-800"}
+                buttonStyles={"self-center w-full md:w-2/3 m-2 border-blue-300"}
+              />
+            )}
+          </>
         )}
       </article>
     </section>
