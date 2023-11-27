@@ -1,7 +1,7 @@
 "use client";
 import { trpc } from "@/trpc/Provider";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { type ZodIssue } from "zod";
 import toast from "react-hot-toast";
 import { UNAUTHENTICATED } from "@/lib/constants/auth";
@@ -14,10 +14,9 @@ import useLessonIssues from "../hooks/useLessonIssues";
 import { type CourseSchemaType } from "../schema";
 function ConfirmPage() {
   const router = useRouter();
-  const pathname = usePathname();
   const { mutate, isLoading: isPosting } = trpc.courses.post.useMutation({
-    onSuccess: () => {
-      //router.push(`${pathname}/save`);
+    onSuccess: ({ id }) => {
+      router.push(`/course/${id}`);
       // invalidate the getCourses query
     },
     onError: (e) => {
