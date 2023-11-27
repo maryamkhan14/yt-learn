@@ -9,9 +9,8 @@
 
 import { initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { db } from "@/lib/db";
-type CreateContextOptions = Record<string, unknown>;
+import { getServerAuthSession } from "@/lib/auth";
 /**
  * 1. CONTEXT
  *
@@ -30,11 +29,6 @@ type CreateContextOptions = Record<string, unknown>;
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (_opts: CreateContextOptions) => {
-  return {
-    db,
-  };
-};
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -42,10 +36,15 @@ const createInnerTRPCContext = (_opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({ req: opts.req });
-};
+export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const session = await getServerAuthSession();
 
+  return {
+    db,
+    session,
+    ...opts,
+  };
+};
 /**
  * 2. INITIALIZATION
  *

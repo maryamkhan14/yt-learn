@@ -1,5 +1,5 @@
 "use client";
-import { trpc } from "@/lib/api";
+import { trpc } from "@/trpc/Provider";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { type ZodIssue } from "zod";
