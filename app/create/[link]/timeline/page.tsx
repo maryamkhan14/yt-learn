@@ -5,24 +5,16 @@ import CourseTimeline from "../components/CourseTimeline";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
 import { type Lesson } from "../schema";
 import { type ZodIssue } from "zod";
-import HamsterLoader from "@/components/HamsterLoader";
 import useLessonIssues from "../hooks/useLessonIssues";
-import useHydrated from "../hooks/useHydrated";
-function Timeline() {
+import HydrationLoader from "@/components/HydrationLoader";
+import Loading from "@/app/loading";
+function TimelinePage() {
   const { link } = useParams();
   const router = useRouter();
-  const hasHydrated = useHydrated();
   const lessons: Lesson[] = useCourseStore(
     (store: CourseStore) => store?.lessons,
   );
-  const issues: ZodIssue[] | undefined | null = useLessonIssues(hasHydrated);
-
-  if (!hasHydrated)
-    return (
-      <div className="flex h-full w-full grow justify-center bg-slate-900/40">
-        <HamsterLoader />
-      </div>
-    );
+  const issues: ZodIssue[] | undefined | null = useLessonIssues();
 
   return (
     <>
@@ -38,6 +30,14 @@ function Timeline() {
         </span>
       </button>
     </>
+  );
+}
+function Timeline() {
+  return (
+    <HydrationLoader
+      duringHydration={<Loading />}
+      afterHydration={<TimelinePage />}
+    />
   );
 }
 

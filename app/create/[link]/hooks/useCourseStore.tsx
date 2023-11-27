@@ -3,35 +3,53 @@ import { type Lesson } from "../schema";
 import { persist } from "zustand/middleware";
 import { dayJsInstance as dayjs } from "@/lib/time";
 interface State {
+  link: string;
   lessons: Lesson[];
   duration: number;
   _hasHydrated: boolean;
-  lastSaved: string;
+  relativeSaveTimestamp: string;
+  isoSaveTimestamp: string;
 }
 interface Actions {
+  setLink: (link: string) => void;
   updateLessons: (lessons: Lesson[]) => void;
-  updateDuration: (duration: number) => void;
+  setDuration: (duration: number) => void;
   updateLastSaved: () => void;
   setHasHydrated: (state: State | boolean) => void;
 }
 const INITIAL_STATE: State = {
+  link: "",
   lessons: [],
   duration: 0,
-  lastSaved: dayjs().toISOString(),
+  relativeSaveTimestamp: "",
+  isoSaveTimestamp: dayjs().toISOString(),
   _hasHydrated: false,
 };
 
 export const useCourseStore = create<State & Actions>()(
   persist(
     (set, _get) => ({
+      link: INITIAL_STATE.link,
       lessons: INITIAL_STATE.lessons,
       duration: INITIAL_STATE.duration,
-      lastSaved: INITIAL_STATE.lastSaved,
+      relativeSaveTimestamp: INITIAL_STATE.relativeSaveTimestamp,
+      isoSaveTimestamp: INITIAL_STATE.isoSaveTimestamp,
       _hasHydrated: false,
+      setLink: (link: string) => set((_state) => ({ link })),
       updateLessons: (lessons: Lesson[]) => set((_state) => ({ lessons })),
-      updateDuration: (duration: number) => set((_state) => ({ duration })),
+      setDuration: (duration: number) => set((_state) => ({ duration })),
       updateLastSaved: () =>
-        set((_state) => ({ lastSaved: dayjs().toISOString() })),
+        set((state) => {
+          if (
+            dayjs(state.isoSaveTimestamp).fromNow() !==
+            state.relativeSaveTimestamp
+          )
+            return {
+              relativeSaveTimestamp: dayjs().fromNow(),
+              isoSaveTimestamp: dayjs().toISOString(),
+            };
+          return { isoSaveTimestamp: dayjs().toISOString() };
+        }),
       setHasHydrated: (state) => {
         set({
           _hasHydrated: !!state,

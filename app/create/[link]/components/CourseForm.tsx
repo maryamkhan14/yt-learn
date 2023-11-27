@@ -1,68 +1,37 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import FilledButton from "@/components/button/FilledButton";
-
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { type SubmitHandler } from "react-hook-form";
 import Form from "@/components/Form";
-import { createCourseSchema } from "../schema";
+import { type CourseSchemaType, CourseSchema, type Lesson } from "../schema";
 import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
-import { type z } from "zod";
-import { useCallback, useEffect, useState } from "react";
 import CircularIconOnlyButton from "../../../../components/button/CircularIconOnlyButton";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
-import HamsterLoader from "@/components/HamsterLoader";
-import { dayJsInstance as dayjs } from "@/lib/time";
 
 function TimelineButton() {
   const router = useRouter();
   const pathname = usePathname();
-  const viewTimeline = useCallback(
-    (e: React.BaseSyntheticEvent) => {
-      e.preventDefault();
-      router.push(`${pathname}/timeline`);
-    },
-    [pathname, router],
-  );
   return (
     <FilledButton
-      onClick={viewTimeline}
+      onClick={() => router.push(`${pathname}/timeline`)}
       text="View Timeline"
       buttonStyles=" self-center"
     />
   );
 }
 function LastSaved() {
-  useEffect(() => {
-    void useCourseStore.persist.rehydrate();
-  }, []);
-  const hasHydrated: boolean = useCourseStore(
-    (store: CourseStore) => store?._hasHydrated,
+  const relativeSaveTimestamp: string = useCourseStore(
+    (store: CourseStore) => store?.relativeSaveTimestamp,
   );
-  const lastSaved: string = useCourseStore(
-    (store: CourseStore) => store?.lastSaved,
-  );
-  const [relativeTime, setRelativeTime] = useState(dayjs().fromNow());
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRelativeTime(dayjs(lastSaved).fromNow());
-    }, 1000 * 5);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [lastSaved]);
-  if (!hasHydrated)
-    return (
-      <div className="flex h-full w-full grow justify-center bg-slate-900/40">
-        <HamsterLoader />
-      </div>
-    );
-
   return (
-    <p className="text-sm italic text-gray-400"> Last saved: {relativeTime}</p>
+    <p className="text-sm italic text-gray-400">
+      {" "}
+      Last saved: {relativeSaveTimestamp}
+    </p>
   );
 }
 function CourseActions() {
@@ -80,33 +49,36 @@ function CourseActions() {
   );
 }
 function CourseForm({ duration }: { duration: number }) {
-  const courseSchema = createCourseSchema(duration);
-  type CourseSchema = z.infer<typeof courseSchema>;
-  const updateDuration = useCourseStore((state) => state.updateDuration);
-  const onSubmit: SubmitHandler<CourseSchema> = async (_data) => {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        alert("it worked!");
-        resolve(undefined);
-      }, 3000);
-    });
+  const router = useRouter();
+  const { link } = useParams();
+  const savedLessons: Lesson[] = useCourseStore(
+    (store: CourseStore) => store?.lessons,
+  );
+  const setDuration = useCourseStore((state) => state.setDuration);
+  const setLink = useCourseStore((state) => state.setLink);
+  const onSubmit: SubmitHandler<CourseSchemaType> = (_data) => {
+    router.push(`/create/${link as string}/confirm`);
   };
   const initialValues = {
-    lessons: [
-      {
-        start: "00:00:00",
-        end: toTimestamp(duration), ///YT vid length
-        name: "",
-      },
-    ],
+    link: decodeURIComponent(link as string),
+    duration,
+    lessons: savedLessons?.length
+      ? savedLessons
+      : [
+          {
+            start: "00:00:00",
+            end: toTimestamp(duration), ///YT vid length
+            name: "",
+          },
+        ],
   };
-  useEffect(() => {
-    updateDuration(duration);
-  }, [duration, updateDuration]);
+  setLink(decodeURIComponent(link as string));
+  setDuration(duration);
+
   return (
     <DndProvider backend={HTML5Backend}>
-      <Form<CourseSchema>
-        schema={courseSchema}
+      <Form<CourseSchemaType>
+        schema={CourseSchema}
         onSubmit={onSubmit}
         defaultValues={initialValues}
         arrayName="lessons"

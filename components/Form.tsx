@@ -2,7 +2,7 @@
 import onPromise from "@/lib/promise-handler";
 import { useForm, FormProvider, type FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ZodObject } from "zod";
+import { ZodEffects, type ZodObject } from "zod";
 import { type ReactNode } from "react";
 type GenericOnSubmit = (
   data: Record<string, FieldValues>,
@@ -15,7 +15,7 @@ function Form<DataSchema extends FieldValues>({
   defaultValues,
   className,
 }: {
-  schema: ZodObject<FieldValues>;
+  schema: ZodObject<FieldValues> | ZodEffects<ZodObject<FieldValues>>;
   onSubmit: (data: DataSchema, event?: React.BaseSyntheticEvent) => void;
   children: ReactNode;
   defaultValues?: FieldValues;
@@ -32,7 +32,7 @@ function Form<DataSchema extends FieldValues>({
     <FormProvider {...methods}>
       <form
         onSubmit={onPromise(handleSubmit(onSubmit as GenericOnSubmit))}
-        className={`flex w-full gap-3 ${className}`}
+        className={`space-between flex w-full gap-8 ${className}`}
       >
         {children}
       </form>

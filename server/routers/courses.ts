@@ -1,27 +1,58 @@
 import { z } from "zod";
-import { getFetch } from "@trpc/client";
 import { createTRPCRouter, publicProcedure } from "@/server/trpc";
+import {
+  CourseSchema,
+  type CourseSchemaType,
+} from "@/app/create/[link]/schema";
+import { getServerSession } from "next-auth";
+import authOptions from "@/lib/auth";
+import { toSeconds } from "@/lib/time";
 export const coursesRouter = createTRPCRouter({
-  getWithChapters: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const course = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id=${input.id}&key=${process.env.YT_API_KEY}`,
-        {
-          referrer: "http://localhost:3000 ",
+  post: publicProcedure.input(CourseSchema).mutation(async ({ ctx, input }) => {
+    const { db } = ctx;
+    const session = await getServerSession(authOptions);
+    const course: CourseSchemaType = input;
+    const createdCourse = await db.course.create({
+      data: {
+        duration: course.duration,
+        link: course.link,
+      },
+    });
+    course.lessons.map(async (lesson) => {
+      await db.lesson.create({
+        data: {
+          start: toSeconds(lesson.start),
+          end: toSeconds(lesson.end),
+          name: lesson.name,
+          courseId: createdCourse.id,
         },
-      );
-      return course.json();
-    }),
-  get: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const course = await fetch(
-        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&id=${input.id}&key=${process.env.YT_API_KEY}`,
-        {
-          referrer: "http://localhost:3000 ",
+      });
+    });
+    if (!!session) {
+      void db.userCourse.create({
+        data: {
+          courseId: createdCourse.id,
+          creatorId: session.user.id,
         },
-      );
-      return course.json();
+      });
+    }
+    return createdCourse;
+  }),
+  get: publicProcedure.query(async ({ ctx }) => {
+    const { db } = ctx;
+    return await db.course.findMany();
+  }),
+  getById: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input: id }) => {
+      const { db } = ctx;
+      return await db.course.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          lessons: true,
+        },
+      });
     }),
 });

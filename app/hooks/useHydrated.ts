@@ -1,9 +1,16 @@
-import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
+import {
+  type CourseStore,
+  useCourseStore,
+} from "../create/[link]/hooks/useCourseStore";
 import "react-vertical-timeline-component/style.min.css";
 import { useEffect } from "react";
+
+async function hydrate() {
+  await useCourseStore.persist.rehydrate();
+}
 function useHydrated(): boolean {
   useEffect(() => {
-    void useCourseStore.persist.rehydrate();
+    void hydrate();
   }, []);
   const hasHydrated: boolean = useCourseStore(
     (store: CourseStore) => store?._hasHydrated,

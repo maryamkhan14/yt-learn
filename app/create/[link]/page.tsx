@@ -5,8 +5,10 @@ import YouTubePlayer from "@/components/YouTubePlayer";
 import toast from "react-hot-toast";
 import { type VideoLink } from "@/app/(landing-page)/schema";
 import dynamic from "next/dynamic";
+import HydrationLoader from "@/components/HydrationLoader";
+import Loading from "@/app/loading";
 const CourseForm = dynamic(() => import("./components/CourseForm"));
-function Course({ params }: { params: { link: VideoLink } }) {
+function CreateCourse({ params }: { params: { link: VideoLink } }) {
   const router = useRouter();
   const [, setPlayed] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -32,10 +34,15 @@ function Course({ params }: { params: { link: VideoLink } }) {
           />
         </span>
 
-        {duration > 0 && <CourseForm duration={duration} />}
+        {duration > 0 && (
+          <HydrationLoader
+            duringHydration={<Loading />}
+            afterHydration={<CourseForm duration={duration} />}
+          />
+        )}
       </div>
     </div>
   );
 }
 
-export default Course;
+export default CreateCourse;
