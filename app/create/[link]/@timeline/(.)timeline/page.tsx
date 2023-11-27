@@ -7,14 +7,12 @@ import "react-vertical-timeline-component/style.min.css";
 import { useParams } from "next/navigation";
 import { type ZodIssue } from "zod";
 import useLessonIssues from "../../hooks/useLessonIssues";
-import useHydrated from "../../hooks/useHydrated";
 function Timeline() {
-  const hasHydrated = useHydrated();
   const { link } = useParams();
   const lessons: Lesson[] = useCourseStore(
     (store: CourseStore) => store?.lessons,
   );
-  const issues: ZodIssue[] | undefined | null = useLessonIssues(hasHydrated);
+  const issues: ZodIssue[] | undefined | null = useLessonIssues();
 
   return (
     <Modal size={"xl"}>
