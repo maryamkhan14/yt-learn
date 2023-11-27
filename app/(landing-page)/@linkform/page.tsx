@@ -12,7 +12,7 @@ function LinkForm() {
     router.replace(`/create/${encodeURIComponent(data.link)}`);
   };
   return (
-    <div className="flex  flex-col gap-3 ">
+    <div className="flex flex-col gap-3">
       <h1 className="mb-2 whitespace-nowrap p-0 text-center text-2xl text-yellow-400">
         Give it a spin! 👇
       </h1>
