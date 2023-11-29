@@ -25,7 +25,7 @@ function LessonActions({
   const { lessons } = getValues();
   return (
     <div
-      className={`my-1 flex h-fit min-w-[10%] justify-evenly gap-2 self-start`}
+      className={`my-1 flex h-fit min-w-[10%] justify-end gap-2 self-center`}
     >
       {endTime > 0 && (
         <CircularIconOnlyButton
