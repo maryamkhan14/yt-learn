@@ -18,13 +18,15 @@ function TimelineElement(
       visible={true}
       className="vertical-timeline-element--work "
       textClassName="border-2 border-blue-400 shadow-blue-400 shadow-glow"
-      contentArrowStyle={{ borderRight: "7px solid  rgb(33, 150, 243)" }}
+      contentArrowStyle={{
+        borderRight: "7px solid  rgb(33, 150, 243)",
+      }}
       contentStyle={{
         background: "inherit",
         borderTop: "7px solid  rgb(33, 150, 243)",
       }}
-      dateClassName=" p-[0.4em]"
-      iconClassName={error ? "bg-red-600" : `bg-blue-400`}
+      dateClassName="md:mx-2 md:-my-1"
+      iconClassName={error ? "bg-red-600 " : `bg-blue-400`}
       icon={error && <ErrorIcon />}
       {...timelineProps}
     >

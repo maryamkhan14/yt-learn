@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { type FilledButtonProps } from "./types";
 import { twMerge } from "tailwind-merge";
+import { Button } from "../ui/button";
 
 function FilledButton({
   icon,
@@ -14,7 +15,7 @@ function FilledButton({
   srCaption = "",
 }: FilledButtonProps) {
   const outerButtonStyles = twMerge(
-    "group/tl-btn relative rounded-lg border-2 px-4 py-2 transition-all ease-in hover:px-6",
+    "group/tl-btn relative rounded-lg border-2 border-slate-50 px-4 py-2 transition-all ease-in hover:px-6",
     buttonStyles,
   );
   const innerDivStyles = twMerge(
@@ -27,7 +28,7 @@ function FilledButton({
     textStyles,
   );
   return (
-    <button
+    <Button
       type={type}
       role={role}
       onClick={onClick}
@@ -38,7 +39,7 @@ function FilledButton({
       <div className={innerDivStyles} />
       <span className={buttonTextStyles}>{text}</span>
       <span className="sr-only">{srCaption}</span>
-    </button>
+    </Button>
   );
 }
 

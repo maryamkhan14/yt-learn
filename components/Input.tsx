@@ -1,6 +1,9 @@
 import { ErrorMessage } from "@hookform/error-message";
 import { useFormContext } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
+import { Input as BaseInput } from "@/components/ui/input";
+import { Label } from "./ui/label";
+
 function Input<Model extends Record<string, boolean | string | number>>({
   name,
   displayName,
@@ -40,10 +43,7 @@ function Input<Model extends Record<string, boolean | string | number>>({
     watch,
     getFieldState,
   } = useFormContext();
-  const inputClassName = twMerge(
-    "w-full rounded-lg border-4 border-opacity-0 px-4 py-3 text-lg text-gray-900 outline-none invalid:border-4 invalid:border-red-500 focus:border-blue-600 focus:ring-0  disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-400",
-    inputStyles,
-  );
+
   const containerClassName = twMerge(
     "min-w-1/5 flex flex-col relative my-3 md:my-0",
     containerStyles,
@@ -52,10 +52,7 @@ function Input<Model extends Record<string, boolean | string | number>>({
   const nameValue: string = watch(name as string) as string;
   return (
     <div className={containerClassName}>
-      <div
-        className="absolute top-0 flex w-full -translate-y-[100%] transform items-end  justify-between p-0"
-        role="label"
-      >
+      <Label className="flex w-full justify-between pb-2">
         <p className="m-0 whitespace-nowrap p-0">{displayName}</p>
 
         {displayRemainingCharacters && nameValue?.length > 0 && !!maxLength && (
@@ -63,11 +60,11 @@ function Input<Model extends Record<string, boolean | string | number>>({
             {maxLength - nameValue.length}
           </span>
         )}
-      </div>
+      </Label>
       <div>
-        <input
+        <BaseInput
+          className={inputStyles}
           type={type}
-          className={inputClassName}
           {...register(name as string)}
           disabled={isSubmitting}
           placeholder={placeholder}
