@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import FilledButton from "@/components/button/FilledButton";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -13,7 +13,7 @@ import CircularIconOnlyButton from "../../../../components/button/CircularIconOn
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
 import Modal from "@/components/Modal";
 import useLessonIssues from "../hooks/useLessonIssues";
-import { ZodIssue } from "zod";
+import { type ZodIssue } from "zod";
 import CourseTimeline from "./CourseTimeline";
 
 function TimelineButton() {
