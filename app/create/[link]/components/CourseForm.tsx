@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import FilledButton from "@/components/button/FilledButton";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -11,16 +11,24 @@ import Lessons from "./Lessons";
 import { toTimestamp } from "../../../../lib/time";
 import CircularIconOnlyButton from "../../../../components/button/CircularIconOnlyButton";
 import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
+import Modal from "@/components/Modal";
+import useLessonIssues from "../hooks/useLessonIssues";
+import { type ZodIssue } from "zod";
+import CourseTimeline from "./CourseTimeline";
 
 function TimelineButton() {
-  const router = useRouter();
-  const pathname = usePathname();
+  const { link } = useParams();
+  const lessons: Lesson[] = useCourseStore(
+    (store: CourseStore) => store?.lessons,
+  );
+  const issues: ZodIssue[] | undefined | null = useLessonIssues();
   return (
-    <FilledButton
-      onClick={() => router.push(`${pathname}/timeline`)}
-      text="View Timeline"
-      buttonStyles=" self-center"
-    />
+    <Modal
+      trigger={<FilledButton text="View Timeline" buttonStyles="self-center" />}
+      size={"xl"}
+    >
+      <CourseTimeline link={link as string} issues={issues} lessons={lessons} />
+    </Modal>
   );
 }
 function LastSaved() {
@@ -84,7 +92,7 @@ function CourseForm({ duration }: { duration: number }) {
         arrayName="lessons"
         className="flex-col"
       >
-        <article className="flex w-full justify-center gap-3">
+        <article className="flex w-full items-center justify-center gap-3">
           <TimelineButton />
           <LastSaved />
         </article>

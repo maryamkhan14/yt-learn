@@ -124,7 +124,7 @@ const Lesson = memo(function Lesson({
   return (
     <div
       ref={previewRef}
-      className={`my-3 flex w-full flex-col gap-3 md:flex-row ${
+      className={`my-3 flex w-full flex-col justify-evenly gap-3 rounded-lg border border-slate-50 p-4 md:flex-row ${
         isDragging ? "opacity-0" : "opacity-1"
       }`}
       data-handler-id={handlerId}

@@ -1,13 +1,5 @@
-function Layout(props: {
-  children: React.ReactNode;
-  timeline: React.ReactNode;
-}) {
-  return (
-    <>
-      {props.children}
-      {props.timeline}
-    </>
-  );
+function Layout(props: { children: React.ReactNode }) {
+  return <>{props.children}</>;
 }
 
 export default Layout;
