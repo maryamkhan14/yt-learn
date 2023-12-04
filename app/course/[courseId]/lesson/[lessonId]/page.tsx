@@ -1,20 +1,24 @@
 "use client";
-import Loading from "@/app/loading";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import { trpc } from "@/trpc/Provider";
 import { type Lesson } from "@prisma/client";
 import { redirect } from "next/navigation";
 import toast from "react-hot-toast";
+import { useCourse } from "../../components/CourseProvider";
 
 function Lesson({
-  params,
+  params: { courseId, lessonId },
 }: {
   params: { courseId: string; lessonId: string };
 }) {
-  const { courseId, lessonId } = params;
-  const { data: course, status } = trpc.courses.getById.useQuery(courseId);
-  if (status === "loading") return <Loading />;
-  const lesson = course!.lessons.find((lesson) => lesson.id === lessonId);
+  const { state: course } = useCourse();
+  const { data: lesson, status } = trpc.lessons.getById.useQuery({
+    lessonId,
+    courseId,
+  });
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
   if (!lesson) {
     toast.error("No such lesson found!");
     redirect("/404");
@@ -24,7 +28,7 @@ function Lesson({
       <h1>{lesson.name}</h1>
       <article className="self-center md:w-2/3">
         <YouTubePlayer
-          url={course!.link}
+          url={course?.link}
           config={{
             youtube: {
               playerVars: {
