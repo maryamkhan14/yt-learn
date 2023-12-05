@@ -26,7 +26,9 @@ async function CourseViewLayout(props: {
           ))}
         </ScrollArea>
       </aside>
-      <CourseProvider course={{ ...courseInformation }}>
+      <CourseProvider
+        course={{ ...courseInformation, createdAt: new Date(createdAt) }}
+      >
         <section className="flex grow flex-col justify-center p-8">
           {props.children}
         </section>
