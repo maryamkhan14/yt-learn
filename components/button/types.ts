@@ -12,7 +12,7 @@ interface BaseButtonProps {
   buttonStyles: string;
   icon?: string;
   onClick?: (e: BaseSyntheticEvent) => void;
-  type?: "submit" | "button";
+  type?: "submit" | "button" | "reset";
   role?: "link";
 }
 export type ButtonProps = BaseButtonProps &
