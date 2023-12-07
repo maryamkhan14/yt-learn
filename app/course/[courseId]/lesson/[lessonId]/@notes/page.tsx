@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Notes from "../../../components/Notes";
+import NoteForm from "../../../components/NoteForm";
 async function NotesPage() {
   const session = await getServerAuthSession();
   if (!session) {
@@ -30,7 +31,7 @@ async function NotesPage() {
               <Notes />
             </TabsContent>
             <TabsContent value="create-note">
-              Change your password here.
+              <NoteForm />
             </TabsContent>
           </Tabs>
         </AccordionContent>
