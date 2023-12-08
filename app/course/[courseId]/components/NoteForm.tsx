@@ -1,6 +1,7 @@
 "use client";
 import Form from "@/components/Form";
 import {
+  type CompletedNoteSchemaType,
   NoteFormSchema,
   type NoteFormSchemaType,
 } from "../lesson/[lessonId]/@notes/schema";
@@ -9,6 +10,10 @@ import Input from "@/components/Input";
 import CircularIconOnlyButton from "@/components/button/CircularIconOnlyButton";
 import { useReactPlayerStore } from "../hooks/useReactPlayerStore";
 import { useParams } from "next/navigation";
+import { trpc } from "@/trpc/Provider";
+import toast from "react-hot-toast";
+import BasicLoader from "@/components/loader/BasicLoader";
+import { type DefaultErrorShape } from "@trpc/server";
 
 const initialValues = { note: "" };
 function NoteFormActions() {
@@ -32,14 +37,27 @@ function NoteFormActions() {
 function NoteForm() {
   const getCurrentTime = useReactPlayerStore((state) => state.getCurrentTime);
   const { lessonId } = useParams();
+  const { mutate, isLoading: isPosting } = trpc.notes.post.useMutation({
+    onSuccess: ({ id: _id }) => {
+      toast.success("Note saved!");
+      // invalidate notes query
+    },
+    onError: (e) => {
+      const message: DefaultErrorShape[] = JSON.parse(
+        e.message,
+      ) as DefaultErrorShape[];
+      for (const error of message) {
+        toast.error(`An error occurred: ${error.message}`);
+      }
+    },
+  });
   const onSubmit: SubmitHandler<NoteFormSchemaType> = (note) => {
-    console.log({
+    const input: CompletedNoteSchemaType = {
       ...note,
-      time: getCurrentTime(),
-      lessonId,
-    });
-
-    // submit the note
+      lessonId: lessonId as string,
+      time: ~~getCurrentTime(),
+    };
+    mutate(input);
   };
   return (
     <Form<NoteFormSchemaType>
@@ -55,7 +73,16 @@ function NoteForm() {
         maxLength={1000}
         placeholder="Enter a note..."
       />
-      <NoteFormActions />
+
+      {isPosting ? (
+        <BasicLoader
+          title="Saving note..."
+          desc="Your note is being saved. Please wait."
+          loaderStyles="h-12 w-12 self-center"
+        />
+      ) : (
+        <NoteFormActions />
+      )}
     </Form>
   );
 }
