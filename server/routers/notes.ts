@@ -3,7 +3,7 @@ import { CompletedNoteSchema } from "@/app/course/[courseId]/lesson/[lessonId]/@
 export const notesRouter = createTRPCRouter({
   post: privateProcedure
     .input(CompletedNoteSchema)
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const { note, lessonId, time } = input;
       const { db, session } = ctx;
 
