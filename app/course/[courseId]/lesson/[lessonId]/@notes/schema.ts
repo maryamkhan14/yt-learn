@@ -8,6 +8,6 @@ export const NoteFormSchema = z.object({
 export type NoteFormSchemaType = z.infer<typeof NoteFormSchema>;
 export const CompletedNoteSchema = NoteFormSchema.extend({
   lessonId: z.string(),
-  time: z.number().int().positive(),
+  time: z.number().int().gte(0),
 });
 export type CompletedNoteSchemaType = z.infer<typeof CompletedNoteSchema>;
