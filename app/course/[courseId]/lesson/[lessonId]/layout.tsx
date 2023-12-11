@@ -8,11 +8,11 @@ function LessonPageLayout({
   lesson: React.ReactNode;
 }) {
   return (
-    <>
+    <section className="flex flex-col gap-12">
       {children}
       {lesson}
       {notes}
-    </>
+    </section>
   );
 }
 

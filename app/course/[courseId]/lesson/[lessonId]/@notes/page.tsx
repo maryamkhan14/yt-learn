@@ -14,10 +14,10 @@ async function NotesPage() {
     return null;
   }
   return (
-    <Accordion type="single" collapsible className="w-full rounded  py-0">
-      <AccordionItem value="notes-accordion" className="bg-slate-900/20 py-0">
-        <AccordionTrigger className="py-2">Notes</AccordionTrigger>
-        <AccordionContent>
+    <Accordion type="single" collapsible className="w-full rounded border">
+      <AccordionItem value="notes-accordion" className="bg-slate-900/20 px-2">
+        <AccordionTrigger className="px-2">Notes</AccordionTrigger>
+        <AccordionContent className="px-2">
           <Tabs defaultValue="notes" className="w-full">
             <TabsList className="w-full bg-slate-900/40">
               <TabsTrigger className="w-1/2" value="notes">
@@ -27,10 +27,13 @@ async function NotesPage() {
                 Create a note
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="notes">
+            <TabsContent value="notes" className="flex justify-center px-4">
               <Notes />
             </TabsContent>
-            <TabsContent value="create-note">
+            <TabsContent
+              value="create-note"
+              className="flex justify-center px-4"
+            >
               <NoteForm />
             </TabsContent>
           </Tabs>

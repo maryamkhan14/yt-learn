@@ -33,7 +33,7 @@ function Lesson({
     redirect("/404");
   }
   return (
-    <>
+    <section className="flex flex-col items-center">
       <h1>{lesson.name}</h1>
       <article className="self-center md:w-2/3">
         <YouTubePlayer
@@ -52,7 +52,7 @@ function Lesson({
           }}
         />
       </article>
-    </>
+    </section>
   );
 }
 
