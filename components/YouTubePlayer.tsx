@@ -1,7 +1,7 @@
 "use client";
 import ReactPlayer from "react-player";
 import { type ReactPlayerProps } from "react-player";
-import HamsterLoader from "./HamsterLoader";
+import HamsterLoader from "./loader/HamsterLoader";
 import { type ForwardedRef } from "react";
 import { useReactPlayerStore } from "@/app/hooks/useReactPlayerStore";
 function Wrapper({ children }: { children: React.ReactNode }) {

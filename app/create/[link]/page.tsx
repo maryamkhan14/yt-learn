@@ -4,7 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { type VideoLink } from "@/app/(landing-page)/schema";
 import dynamic from "next/dynamic";
-import HydrationLoader from "@/components/HydrationLoader";
+import HydrationLoader from "@/components/loader/HydrationLoader";
 import Loading from "@/app/loading";
 const CourseForm = dynamic(() => import("./components/CourseForm"));
 const YouTubePlayer = dynamic(() => import("@/components/YouTubePlayer"), {

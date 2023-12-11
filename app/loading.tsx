@@ -1,4 +1,4 @@
-import HamsterLoader from "@/components/HamsterLoader";
+import HamsterLoader from "@/components/loader/HamsterLoader";
 
 function Loading() {
   return (
