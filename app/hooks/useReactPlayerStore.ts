@@ -6,7 +6,6 @@ interface State {
   time: number;
 }
 interface Actions {
-  getCurrentTime: () => number;
   setPlayerRef: (ref: State["playerRef"]) => void;
   setTime: (time: number) => void;
 }
@@ -15,10 +14,9 @@ const INITIAL_STATE: State = {
   time: 0,
 };
 
-export const useReactPlayerStore = create<State & Actions>()((set, get) => ({
+export const useReactPlayerStore = create<State & Actions>()((set, _get) => ({
   playerRef: INITIAL_STATE.playerRef,
   time: INITIAL_STATE.time,
-  getCurrentTime: () => get()?.playerRef?.current?.getCurrentTime() ?? 0,
   setTime: (time: number) => set((_state) => ({ time })),
   setPlayerRef: (playerRef: State["playerRef"]) =>
     set((_state) => ({
