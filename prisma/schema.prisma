@@ -26,6 +26,16 @@ model Lesson {
     name        String
     courseId    String
     course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    notes       Note[]     
+}
+model Note {
+    id          String    @id @default(cuid())  
+    time        Int
+    note        String
+    userId      String
+    lessonId    String
+    user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 }
 model UserCourse {
     courseId    String
@@ -70,6 +80,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   courses       UserCourse[]
+  notes         Note[]
 }
 
 model VerificationToken {

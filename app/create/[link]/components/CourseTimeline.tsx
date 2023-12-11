@@ -3,10 +3,13 @@ import { type Lesson } from "../schema";
 import { VerticalTimeline } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import TimelineElement from "@/components/timeline/TimelineElement";
-import YouTubePlayer from "@/components/YouTubePlayer";
 import { toSeconds } from "@/lib/time";
 import { type ZodIssue } from "zod";
 import { useCallback } from "react";
+import dynamic from "next/dynamic";
+const YouTubePlayer = dynamic(() => import("@/components/YouTubePlayer"), {
+  ssr: false,
+});
 
 function CourseTimeline({
   link,

@@ -2,7 +2,7 @@
 import { type Course } from "@prisma/client";
 import * as React from "react";
 
-type CourseInformationOnly = Omit<Course, "lessons" | "createdAt">;
+type CourseInformationOnly = Omit<Course, "lessons">;
 type Action =
   | { type: "SET_COURSE"; payload: CourseInformationOnly }
   | { type: "UNSET_COURSE"; payload: void };

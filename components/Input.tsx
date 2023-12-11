@@ -3,6 +3,7 @@ import { useFormContext } from "react-hook-form";
 import { twMerge } from "tailwind-merge";
 import { Input as BaseInput } from "@/components/ui/input";
 import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
 
 function Input<Model extends Record<string, boolean | string | number>>({
   name,
@@ -15,6 +16,7 @@ function Input<Model extends Record<string, boolean | string | number>>({
   inputMode = "text",
   displayRemainingCharacters = false,
   readOnly = false,
+  isTextarea = false,
 }: {
   name: keyof Model | string;
   displayName: string;
@@ -36,6 +38,7 @@ function Input<Model extends Record<string, boolean | string | number>>({
   displayRemainingCharacters?: boolean;
   readOnly?: boolean;
   defaultValue?: string | number;
+  isTextarea?: boolean;
 }) {
   const {
     register,
@@ -62,16 +65,28 @@ function Input<Model extends Record<string, boolean | string | number>>({
         )}
       </Label>
       <div>
-        <BaseInput
-          className={inputStyles}
-          type={type}
-          {...register(name as string)}
-          disabled={isSubmitting}
-          placeholder={placeholder}
-          maxLength={maxLength}
-          inputMode={inputMode}
-          readOnly={readOnly}
-        />
+        {isTextarea ? (
+          <Textarea
+            className={inputStyles}
+            {...register(name as string)}
+            disabled={isSubmitting}
+            placeholder={placeholder}
+            maxLength={maxLength}
+            inputMode={inputMode}
+            readOnly={readOnly}
+          />
+        ) : (
+          <BaseInput
+            className={inputStyles}
+            type={type}
+            {...register(name as string)}
+            disabled={isSubmitting}
+            placeholder={placeholder}
+            maxLength={maxLength}
+            inputMode={inputMode}
+            readOnly={readOnly}
+          />
+        )}
       </div>
       <ErrorMessage
         errors={errors}
