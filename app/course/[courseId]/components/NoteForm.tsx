@@ -8,7 +8,7 @@ import {
 import { type SubmitHandler } from "react-hook-form";
 import Input from "@/components/Input";
 import CircularIconOnlyButton from "@/components/button/CircularIconOnlyButton";
-import { useReactPlayerStore } from "../hooks/useReactPlayerStore";
+import { useReactPlayerStore } from "../../../hooks/useReactPlayerStore";
 import { useParams } from "next/navigation";
 import { trpc } from "@/trpc/Provider";
 import toast from "react-hot-toast";

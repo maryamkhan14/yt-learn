@@ -11,7 +11,7 @@ import { redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import { useCourse } from "../../../components/CourseProvider";
 import React, { useRef } from "react";
-import { useReactPlayerStore } from "../../../hooks/useReactPlayerStore";
+import { useReactPlayerStore } from "../../../../../hooks/useReactPlayerStore";
 
 function Lesson({
   params: { courseId, lessonId },
