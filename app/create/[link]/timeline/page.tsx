@@ -6,7 +6,9 @@ import { type CourseStore, useCourseStore } from "../hooks/useCourseStore";
 import { type Lesson } from "../schema";
 import { type ZodIssue } from "zod";
 import useLessonIssues from "../hooks/useLessonIssues";
-import HydrationLoader from "@/components/HydrationLoader";
+import HydrationLoader, {
+  type PersistentStore,
+} from "@/components/loader/HydrationLoader";
 import Loading from "@/app/loading";
 import FilledButton from "@/components/button/FilledButton";
 function TimelinePage() {
@@ -33,6 +35,7 @@ function TimelinePage() {
 function Timeline() {
   return (
     <HydrationLoader
+      store={useCourseStore as PersistentStore}
       duringHydration={<Loading />}
       afterHydration={<TimelinePage />}
     />
