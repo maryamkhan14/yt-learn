@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { type Lesson } from "../schema";
 import { persist } from "zustand/middleware";
 import { dayJsInstance as dayjs } from "@/lib/time";
+import { createDefaultLesson } from "../utils/createDefaultLesson";
 interface State {
   link: string;
   lessons: Lesson[];
@@ -16,6 +17,7 @@ interface Actions {
   setDuration: (duration: number) => void;
   updateLastSaved: () => void;
   setHasHydrated: (state: State | boolean) => void;
+  resetLessons: () => void;
 }
 const INITIAL_STATE: State = {
   link: "",
@@ -38,6 +40,10 @@ export const useCourseStore = create<State & Actions>()(
       setLink: (link: string) => set((_state) => ({ link })),
       updateLessons: (lessons: Lesson[]) => set((_state) => ({ lessons })),
       setDuration: (duration: number) => set((_state) => ({ duration })),
+      resetLessons: () =>
+        set((_state) => ({
+          lessons: [createDefaultLesson(get().duration)],
+        })),
       updateLastSaved: () =>
         set((state) => {
           if (
