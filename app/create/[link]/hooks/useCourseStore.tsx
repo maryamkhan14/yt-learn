@@ -16,7 +16,7 @@ interface Actions {
   updateLessons: (lessons: Lesson[]) => void;
   setDuration: (duration: number) => void;
   updateLastSaved: () => void;
-  setHasHydrated: (state: State | boolean) => void;
+  setHasHydrated: () => void;
   resetLessons: () => void;
 }
 const INITIAL_STATE: State = {
@@ -30,7 +30,7 @@ const INITIAL_STATE: State = {
 
 export const useCourseStore = create<State & Actions>()(
   persist(
-    (set, _get) => ({
+    (set, get) => ({
       link: INITIAL_STATE.link,
       lessons: INITIAL_STATE.lessons,
       duration: INITIAL_STATE.duration,
@@ -56,17 +56,22 @@ export const useCourseStore = create<State & Actions>()(
             };
           return { isoSaveTimestamp: dayjs().toISOString() };
         }),
-      setHasHydrated: (state) => {
-        set({
-          _hasHydrated: !!state,
+      setHasHydrated: () => {
+        set((state) => {
+          return { _hasHydrated: !!state };
         });
       },
     }),
     {
       name: "course",
       skipHydration: true,
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      onRehydrateStorage: (_state) => {
+        // optional
+        return (state, error) => {
+          if (!error) {
+            state?.setHasHydrated();
+          }
+        };
       },
     },
   ),
