@@ -29,26 +29,28 @@ export const CourseSchema = z
   })
   .superRefine((course, ctx) => {
     const { lessons } = course;
-    const { duration } = course;
-    let currentMinimum = lessons[0]!.end;
-    for (let i = 1; i < lessons.length; i++) {
-      const currentLessonEnd = lessons[i]!.end;
-      if (currentLessonEnd <= currentMinimum) {
+    if (lessons?.length) {
+      const { duration } = course;
+      let currentMinimum = lessons[0]!.end;
+      for (let i = 1; i < lessons.length; i++) {
+        const currentLessonEnd = lessons[i]!.end;
+        if (currentLessonEnd <= currentMinimum) {
+          ctx.addIssue({
+            code: "custom",
+            message: "Timestamps must be in increasing order",
+            path: ["lessons", i, "end"],
+          });
+        }
+
+        currentMinimum = currentLessonEnd;
+      }
+      if (currentMinimum > toTimestamp(duration)) {
         ctx.addIssue({
           code: "custom",
-          message: "Timestamps must be in increasing order",
-          path: ["lessons", i, "end"],
+          message: "Lesson ending timestamp cannot exceed course duration",
+          path: ["lessons", lessons.length - 1, "end"],
         });
       }
-
-      currentMinimum = currentLessonEnd;
-    }
-    if (currentMinimum > toTimestamp(duration)) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Lesson ending timestamp cannot exceed course duration",
-        path: ["lessons", lessons.length - 1, "end"],
-      });
     }
   });
 export type CourseSchemaType = z.infer<typeof CourseSchema>;
